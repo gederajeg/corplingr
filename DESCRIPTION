@@ -2,13 +2,19 @@ Package: corplingr
 Type: Package
 Title: Tidy Concordances, Collocates, and Wordlist
 Version: 0.1.0
-Author: Gede Primahadi Wijaya Rajeg
-Maintainer: Gede Primahadi Wijaya Rajeg <primahadiwijaya@gmail.com>
+Author: Gede P. W. Rajeg (Gede Primahadi Wijaya Rajeg)
+Maintainer: Gede P. W. Rajeg <primahadiwijaya@gmail.com>
 Description: Generates concordances, collocates, and wordlist following the
     tidyverse style. It is designed initially to work with raw corpora, namely the
-    Indonesian Leipzig Corpora.
+    randomised, sentence-based corpus of the Indonesian Leipzig Corpora.
 Depends: R (>= 3.3.1)
-Imports: tidyverse
+Imports: 
+  dplyr,
+  tidyr,
+  purrr,
+  stringr,
+  readr,
+  tibble,
 License: CC-BY-NC-SA
 Encoding: UTF-8
 LazyData: true

@@ -36,8 +36,7 @@ a list of two tibbles: (i) for collocates with sentence number of the match, win
 The function produces tibble-output collocates for Leipzig Corpora files.
 }
 \examples{
-Do not run!
-
+\dontrun{
 colloc <- colloc_leipzig_tidy(corpus = corpus_files_path[2:3],
                               pattern = "\\\\bterelakkan\\\\b",
                               window = "b",
@@ -49,4 +48,6 @@ colloc <- colloc_leipzig_tidy(corpus = corpus_files_path[2:3],
 colloc$collocates
 
 colloc$sentence_matches
+}
+
 }

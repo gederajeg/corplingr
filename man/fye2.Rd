@@ -27,5 +27,7 @@ fye2(a, b, c, d, a.exp, two.sided = FALSE, res = c("p", "or"), float = 3)
 vector of the same length as \code{a}.
 }
 \description{
-This is a vectorised wrapper for \code{fisher.test()} in the \code{stats} package. The implementation of the code is slightly adapted from Levshina's (2015) \code{pv.Fisher.collstr()}. \code{fye2()} adds the argument for values in the \code{alternative} argument in the \code{fisher.test()}.
+This is a vectorised wrapper for \code{\link[stats]{fisher.test}} in the \code{stats} package.
+    The implementation of the code is slightly adapted from Levshina's (2015) \code{pv.Fisher.collstr} of the \code{Rling} package.
+    \code{fye2} adds the argument for value that is passed to the \code{alternative} argument in the embedded \code{\link[stats]{fisher.test}}.
 }

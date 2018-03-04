@@ -7,12 +7,12 @@
 ngram2_assoc(df, min_ngram = 10, two_tailed = TRUE)
 }
 \arguments{
-\item{df}{data frame from the output of \code{\link{ngram_word_leipzig()}} and \code{\link{joint_freq()}}.}
+\item{df}{data frame from the output of \code{\link{ngram_word_leipzig}} and \code{\link{joint_freq}}.}
 
 \item{min_ngram}{minimun token frequency of the 2-word ngram to be included in the computation. The default is \code{10}}
 
 \item{two_tailed}{two-sided test for the Fisher Exact (\code{TRUE} -- the default) or one-sided (\code{FALSE}).}
 }
 \description{
-The function performs association measure (i.e. Collostruction Strength) and odds ratio for each bigram using the embedded \code{fisher.test()} from the base R.
+The function performs association measure (i.e. Collostruction Strength) and odds ratio for each bigram using the embedded \code{\link[stats]{fisher.test}} from the base R.
 }

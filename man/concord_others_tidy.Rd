@@ -26,11 +26,13 @@ The function generates a tidy concordance for a search pattern in a (set of) cor
     The function requires the corpus file(s) loaded and ready in the console as a vector of text with more than one line of texts/sentences. See \bold{Examples} below for details.
 }
 \examples{
-# Do not run!
-
-# Load the corpus
-my.corpus.data <- "/Users/Primahadi/Documents/Corpora/CORPUS/NOVEL BI-PILIHAN-DATA/_corpus_azab_dan_sengsara.RData"
+\dontrun{
+# Load or read in the corpus data
+my.corpus.data <- "/Your/Path/To/Corpus.RData"
 load(my.corpus.data)
+
+my.corpus.file.path <- "/Your/Path/To/Corpus.txt"
+corp <- readr::read_lines(my.corpus.file.path)
 
 # Inspect the first two elements.
 head(corp, 2)
@@ -65,5 +67,7 @@ head(concordance)
 readr::write_delim(concordance,
                    path = "/Users/Primahadi/Desktop/my_concordance.txt",
                    delim = "\\t")
+}
+
 
 }

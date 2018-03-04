@@ -17,7 +17,7 @@
 #' @importFrom tibble tibble
 #' @importFrom tidyr separate
 #' @examples
-#'
+#' \dontrun{
 #' # load the corplingr package
 #' devtools::load_all("~/Documents/_my_r_packages/corplingr")
 #'
@@ -28,8 +28,14 @@
 #' sentence_cleaned <- paste("SENT", sentence_cleaned, "SENT", sep = " ")
 #'
 #' # generate the ngram
-#' ngram_out <- ngram_word_leipzig(input = sentence_cleaned, gram_length = 2, split = "[^a-z]+", case_insensitive = TRUE, sample_n = NULL)
+#' ngram_out <- ngram_word_leipzig(input = sentence_cleaned,
+#'                                 gram_length = 2, split = "[^a-z]+",
+#'                                 case_insensitive = TRUE,
+#'                                 sample_n = NULL)
 #'
+#' }
+#'
+
 
 ngram_word_leipzig <- function(input, gram_length = 2, split = "[^a-z-]+", case_insensitive = TRUE, sample_n = NULL) {
 
@@ -61,8 +67,8 @@ ngram_word_leipzig <- function(input, gram_length = 2, split = "[^a-z-]+", case_
 #' Combine the ngram output with the frequency list of the elements of the ngram
 #'
 #' @description Left join the frequency list for each element making up the ngram
-#' @param df.x ngram table output by \code{ngram_word_leipzig()}.
-#' @param df.y word list table output by \code{ngram_word_leipzig()}.
+#' @param df.x ngram table output by \code{\link{ngram_word_leipzig}}.
+#' @param df.y word list table output by \code{\link{ngram_word_leipzig}}.
 #' @param ... capture the word elements of the ngram (e.g., \code{w1, w2, w3, etc.}).
 #' @return a joint tibble for the ngram and frequency list for each component word of the ngram
 #' @importFrom dplyr funs
@@ -73,7 +79,7 @@ ngram_word_leipzig <- function(input, gram_length = 2, split = "[^a-z-]+", case_
 #' @importFrom dplyr rename_if
 #' @importFrom dplyr %>%
 #' @examples
-#'
+#' \dontrun{
 #' # load the corplingr package
 #' devtools::load_all("~/Documents/_my_r_packages/corplingr")
 #'
@@ -91,7 +97,8 @@ ngram_word_leipzig <- function(input, gram_length = 2, split = "[^a-z-]+", case_
 #' # joint the frequency list
 #' df <- joint_freq(ngram, wlist, w1, w2)
 #' df
-#'
+#' }
+
 
 joint_freq <- function(df.x, df.y, ...) {
 
@@ -107,8 +114,8 @@ joint_freq <- function(df.x, df.y, ...) {
 
 #' Association measure for the 2-word ngram
 #'
-#' @description The function performs association measure (i.e. Collostruction Strength) and odds ratio for each bigram using the embedded \code{fisher.test()} from the base R.
-#' @param df data frame from the output of \code{\link{ngram_word_leipzig()}} and \code{\link{joint_freq()}}.
+#' @description The function performs association measure (i.e. Collostruction Strength) and odds ratio for each bigram using the embedded \code{\link[stats]{fisher.test}} from the base R.
+#' @param df data frame from the output of \code{\link{ngram_word_leipzig}} and \code{\link{joint_freq}}.
 #' @param min_ngram minimun token frequency of the 2-word ngram to be included in the computation. The default is \code{10}
 #' @param two_tailed two-sided test for the Fisher Exact (\code{TRUE} -- the default) or one-sided (\code{FALSE}).
 #' @importFrom dplyr %>%

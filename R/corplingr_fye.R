@@ -1,6 +1,8 @@
 #' Fisher Yates Exact test
 #'
-#' @description This is a vectorised wrapper for \code{fisher.test()} in the \code{stats} package. The implementation of the code is slightly adapted from Levshina's (2015) \code{pv.Fisher.collstr()}. \code{fye2()} adds the argument for values in the \code{alternative} argument in the \code{fisher.test()}.
+#' @description This is a vectorised wrapper for \code{\link[stats]{fisher.test}} in the \code{stats} package.
+#'     The implementation of the code is slightly adapted from Levshina's (2015) \code{pv.Fisher.collstr} of the \code{Rling} package.
+#'     \code{fye2} adds the argument for value that is passed to the \code{alternative} argument in the embedded \code{\link[stats]{fisher.test}}.
 #' @param a cell \code{a} in a 2-by-2 crosstabulation matrix (viz. representing the co-occurrence tokens of the levels of the variables. For instance, word-word co-occurrences, or word-construction co-occurrences).
 #' @param b cell \code{b} in the matrix (it represents alternative items for the co-occurrence of the first row and the second column. For instance, alternative construction, or near-synonyms).
 #' @param c cell \code{c} in the matrix (i.e., intersection of the second row and the first column (\code{[2, 1]}))
@@ -10,6 +12,9 @@
 #' @param res choice of outputs: (i) the \code{p.value} ("p") or (ii) \code{odds.ratio} ("or").
 #' @param float the floating digits (\code{3} -- Default).
 #' @return vector of the same length as \code{a}.
+#' @importFrom stats end
+#' @importFrom stats p.adjust
+#' @importFrom stats start
 
 
 fye2 <- function (a, b, c, d, a.exp, two.sided = FALSE, res = c("p", "or"), float = 3) {

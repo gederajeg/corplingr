@@ -12,13 +12,36 @@
 #' @param sent_output_name name of the file for the full sentence match containing the collocates
 #' @return a list of two tibbles: (i) for collocates with sentence number of the match, window span information, and the corpus files, and (ii) full-sentences per match with sent number and corpus file
 #' @importFrom dplyr progress_estimated
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
+#' @importFrom dplyr left_join
+#' @importFrom dplyr filter
+#' @importFrom tibble as_tibble
 #' @importFrom readr write_delim
 #' @importFrom readr write_lines
+#' @importFrom purrr map
 #' @importFrom purrr map_dbl
 #' @importFrom purrr map_chr
+#' @importFrom purrr set_names
+#' @importFrom readr read_lines
+#' @importFrom stringr str_c
+#' @importFrom stringr str_count
+#' @importFrom stringr regex
+#' @importFrom stringr str_which
+#' @importFrom stringr str_extract_all
+#' @importFrom stringr str_extract
+#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_locate_all
+#' @importFrom stringr str_replace
+#' @importFrom stringr str_trim
+#' @importFrom stringr str_sub
+#' @importFrom stringr str_split
+#' @importFrom tibble tibble
+#' @importFrom stringr str_subset
+#' @importFrom dplyr %>%
 #' @examples
-#' Do not run!
-#'
+#' \dontrun{
 #' colloc <- colloc_leipzig_tidy(corpus = corpus_files_path[2:3],
 #'                               pattern = "\\bterelakkan\\b",
 #'                               window = "b",
@@ -30,6 +53,9 @@
 #' colloc$collocates
 #'
 #' colloc$sentence_matches
+#' }
+#'
+
 
 #corpus = corpus_files_path[2:3]
 #pattern = "\\bmembeli\\b"
@@ -57,28 +83,28 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
   if (window == "l") {
     span1 <- span
     span <- -span:0
-    names(span) <- c(str_c("l", span1:1, sep = ""), "node")
+    names(span) <- c(stringr::str_c("l", span1:1, sep = ""), "node")
   } else if (window == "r") {
     span1 <- span
     span <- 0:span
-    names(span) <- c("node", str_c("r", 1:span1))
+    names(span) <- c("node", stringr::str_c("r", 1:span1))
   } else {
     span1 <- span
     span <- -span:span
-    names(span) <- c(str_c("l", span1:1, sep = ""), "node", str_c("r", 1:span1, sep = ""))
+    names(span) <- c(stringr::str_c("l", span1:1, sep = ""), "node", stringr::str_c("r", 1:span1, sep = ""))
   }
 
-  colloc_all <- tibble()
-  sentmatch_all <- tibble()
+  colloc_all <- tibble::tibble()
+  sentmatch_all <- tibble::tibble()
   for (c in seq_along(corpus)) {
     # read in the corpus text
-    corpora <- read_lines(file = corpus[c])
+    corpora <- readr::read_lines(file = corpus[c])
     cat('"', basename(corpus[c]), '" ', "has been loaded!\n", sep = "")
 
     for (r in seq_along(pattern)) {
       # detect the search pattern and retrieve the citation with the match
-      subcorpus <- corpora %>%
-        str_subset(regex(pattern[r], ignore_case = case_insensitive))
+      match.id <- stringr::str_which(corpora, stringr::regex(pattern[r], ignore_case = case_insensitive))
+      subcorpus <- corpora[match.id]
 
       # detect if any matches found
       if (length(subcorpus) == 0) {
@@ -91,23 +117,22 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
 
         ## PREPARE THE MATCHED SENTENCES
         # detect the sentence number in which the match is found
-        sent_id <- subcorpus %>%
-          str_extract("(^\\d+?(?=\\s))")
+        sent_id <- match.id
 
         # delete sentence number and put spaces around non-white-space characters
         subcorpus <- subcorpus %>%
-          str_replace_all("^(\\d+?\\s)", "") %>%
-          str_replace_all("(--)", " ") %>%
-          str_replace_all("([^a-zA-Z0-9-\\s]+)", " \\1 ") %>%
-          str_replace_all("\\s+", " ") %>%
-          str_trim()
+          stringr::str_replace_all("^(\\d+?\\s)", "") %>%
+          stringr::str_replace_all("(--)", " ") %>%
+          stringr::str_replace_all("([^a-zA-Z0-9-\\s]+)", " \\1 ") %>%
+          stringr::str_replace_all("\\s+", " ") %>%
+          stringr::str_trim()
 
         # retrieve the corpus names
         corpus_name <- basename(corpus[c]) %>%
-          str_replace('-sentences.*$', '')
+          stringr::str_replace('-sentences.*$', '')
 
         # get the number of matches of the search word found in the corpus
-        match_length <- str_count(subcorpus, regex(pattern[r], ignore_case = case_insensitive))
+        match_length <- stringr::str_count(subcorpus, stringr::regex(pattern[r], ignore_case = case_insensitive))
 
         # replicate the sentences/string based on the number of matches found in the string
         sent.with.match <- rep(subcorpus, match_length)
@@ -117,9 +142,9 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
 
         # get the starting and end position of the pattern
         # and store as a tibble
-        position <- str_locate_all(subcorpus, regex(pattern[r], ignore_case = case_insensitive)) %>%
-          map(as_tibble) %>%
-          map_df(bind_rows)
+        position <- stringr::str_locate_all(subcorpus, stringr::regex(pattern[r], ignore_case = case_insensitive)) %>%
+          purrr::map(tibble::as_tibble) %>%
+          purrr::map_df(dplyr::bind_rows)
 
         ## RETRIEVE THE COLLOCATES
         all_colloc <- tibble()
@@ -149,17 +174,17 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
 
           # get the vector position of every word-character in a sentence
           colloc <- sent.match.tagged %>%
-            str_split(regex("[^a-z0-9-]+", ignore_case = T)) %>%
+            stringr::str_split(stringr::regex("[^a-z0-9-]+", ignore_case = T)) %>%
             unlist() %>%
-            .[nchar(.)!=0] %>%
-            set_names(nm = seq(length(.))) %>% # give names for each substracted word with their resulting 'vector position'
-            tibble(string = sent.match.tagged_1, # store these words and their vector positions into a tibble
-                   w = .,
-                   vector.pos = as.numeric(names(.)))
+            .[nzchar(.)] %>%
+            purrr::set_names(nm = seq(length(.))) %>% # give names for each substracted word with their resulting 'vector position'
+            tibble::tibble(string = sent.match.tagged_1, # store these words and their vector positions into a tibble
+                           w = .,
+                           vector.pos = as.numeric(names(.)))
 
           if (tolower_colloc == TRUE) {
             colloc <- colloc %>%
-              mutate(w = tolower(w))
+              mutate(w = stringr::str_to_lower(w))
           } else {
             colloc <- colloc
           }
@@ -222,96 +247,4 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
   }
 }
 
-#' Vectorised collocate extraction
-#'
-#' @importFrom stringr str_extract
-#' @importFrom purrr map_int
-#' @importFrom purrr is_empty
 
-colloc_leipzig_vector <- function(corpus.vect.path = NULL, corpus.vect = NULL, pattern = NULL, case.insensitive = TRUE, window = "r", span) {
-  waktu <- unlist(str_split(Sys.time(), "\\s"))
-  hari <- waktu[1]
-  jam1 <- waktu[2]
-  if (is.null(corpus.vect) == TRUE & is.null(corpus.vect.path) == FALSE) {
-    load(corpus.vect.path)
-    corpus <- corpus.word.vector
-    rm(corpus.word.vector)
-    corpus.id <- str_extract(corpus.vect.path, "(?<=__)(.+?)(?=\\.RData)")
-    cat(paste("\nDone loading the corpus vector: '", corpus.id, "'...\n", sep = ""))
-  } else if (is.null(corpus.vect) == FALSE & is.null(corpus.vect.path) == TRUE) {
-    cat("\nPlease specify the 'corpus.vect.path' argument with the name/id (NOT THE FILE PATH!!!) for the corpus vector!\n")
-  } else if (is.null(corpus.vect) == FALSE & is.null(corpus.vect.path) == FALSE) {
-    if (is.list(corpus.vect) == FALSE) {
-      cat("\nYou need the corpus vector in the form of 'list' of tokenised sentences!\n")
-    } else {
-      corpus <- corpus.vect
-      corpus.id <- corpus.vect.path
-    }
-  }
-
-  if (window == "r") {
-    collspan <- 1:span
-    names(collspan) <- paste("r", collspan, sep = "")
-  } else if (window == "l") {
-    collspan <- -span:-1
-    names(collspan) <- paste("l", span:1, sep = "")
-  } else {
-    l <- -span:-1
-    names(l) <- paste("l", span:1, sep = "")
-    r <- 1:span
-    names(r) <- paste("r", 1:span, sep = "")
-    collspan <- c(l, r)
-  }
-  cat("Gathering the pattern vector position...\n")
-  match.vect.pos <- corpus %>%
-    map(~str_which(., pattern = regex(pattern, ignore_case = case.insensitive)))
-
-  cat("Counting the length of the match found...\n")
-  match.length <- match.vect.pos %>%
-    map_int(length) %>%
-    .[.>0]
-  match.vect.pos1 <- unname(unlist(match.vect.pos[names(match.length)]))
-  rm(match.vect.pos)
-  match.sent.num <- unlist(str_extract_all(names(match.length), "\\d+")) %>%
-    as.numeric()
-  cat("Replicating the sentence for the total number of match found in each sentence...\n")
-  corpus1 <- rep(corpus[match.sent.num], match.length)
-  rm(corpus, match.length)
-  colloc.df <- tibble()
-  prog <- round(summary(1:length(corpus1))[-4])
-  for (i in seq_along(corpus1)) {
-    if (i == prog[1]) {
-      cat("We start gathering the collocates...\n")
-    } else if (i == prog[2]) {
-      cat("25%...\n")
-    } else if (i == prog[3]) {
-      cat("50%...\n")
-    } else if (i == prog[4]) {
-      cat("75%...\n")
-    } else if (i == prog[5]) {
-      cat("The last gathering phase!\n\n")
-    }
-    # collocates vector position
-    collpos <- match.vect.pos1[i] + collspan
-    collpos <- collpos[collpos <= length(corpus1[[i]]) & collpos > 0] # get only the valid collocate position
-    if (is_empty(collpos) == TRUE) {
-      #cat("No available collocates position for sentence no. ", i, "!\n", sep = "")
-      next
-    } else {
-      # get the collocates
-      colloc <- corpus1[[i]][collpos]
-      colloc.df.temp <- tibble(w = colloc,
-                               vector.pos = unname(collpos),
-                               wspan = names(collpos),
-                               corpus = corpus.id,
-                               sent = as.numeric(str_extract(names(corpus1[i]), "\\d+")))
-      colloc.df <- bind_rows(colloc.df, colloc.df.temp)
-    }
-  }
-  waktu <- unlist(str_split(Sys.time(), "\\s"))
-  hari <- waktu[1]
-  jam2 <- waktu[2]
-  cat(paste("\nStarting at: ", hari, " ", jam1, "...\n", sep = ""))
-  cat(paste("Finished at: ", hari, " ", jam2, "...\n", sep = ""))
-  return(colloc.df)
-}

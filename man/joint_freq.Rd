@@ -7,9 +7,9 @@
 joint_freq(df.x, df.y, ...)
 }
 \arguments{
-\item{df.x}{ngram table output by \code{ngram_word_leipzig()}.}
+\item{df.x}{ngram table output by \code{\link{ngram_word_leipzig}}.}
 
-\item{df.y}{word list table output by \code{ngram_word_leipzig()}.}
+\item{df.y}{word list table output by \code{\link{ngram_word_leipzig}}.}
 
 \item{...}{capture the word elements of the ngram (e.g., \code{w1, w2, w3, etc.}).}
 }
@@ -20,7 +20,7 @@ a joint tibble for the ngram and frequency list for each component word of the n
 Left join the frequency list for each element making up the ngram
 }
 \examples{
-
+\dontrun{
 # load the corplingr package
 devtools::load_all("~/Documents/_my_r_packages/corplingr")
 
@@ -38,5 +38,5 @@ wlist <- ngramout$wlist
 # joint the frequency list
 df <- joint_freq(ngram, wlist, w1, w2)
 df
-
+}
 }

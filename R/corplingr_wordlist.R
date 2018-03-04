@@ -19,15 +19,19 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr bind_cols
 #' @examples
-#'
+#' \dontrun{
 #' # prepare the input
 #' regex <- "\\bmemberi(kan)?\\b"
 #' corpus.path <- corpus_files_path[1:2]
 #'
 #' # generate the frequency count
-#' create_wordlist(pattern = regex, corpus_file_names = corpus.path, case_insensitive = TRUE)
+#' freqlist_create(pattern = regex,
+#'                 corpus_file_names = corpus.path,
+#'                 case_insensitive = TRUE)
+#' }
 #'
-create_wordlist <- function(pattern=NULL, corpus_file_names="corpus-file path", case_insensitive=TRUE) {
+#'
+freqlist_create <- function(pattern=NULL, corpus_file_names="corpus filepath", case_insensitive=TRUE) {
 
   # create an empty tibble to store the results
   regexp <- pattern
@@ -78,6 +82,45 @@ create_wordlist <- function(pattern=NULL, corpus_file_names="corpus-file path", 
     }
   }
   return(wordlist_table)
+}
+
+#' Frequency list of all words in a corpus
+#'
+#' @param split_regex user-defined regular expressions to tokenise the corpus.
+#' @param corpus_file_names full filepath to ONE Leipzig Corpora.
+#' @param case_insensitive Logical; ignoring (\code{TRUE}) or maintaining (\code{FALSE}) the case when splitting the corpus into word token.
+#' @return A tibble of frequency list in descending order of the frequency.
+#' @examples
+#' \dontrun{
+#' wlist_all <- freqlist_create_all(corpus_file_names = corpus_files_path[1])
+#' }
+#' @importFrom rlang sym
+#' @importFrom rlang :=
+#' @importFrom stringr str_split
+#' @importFrom stringr regex
+#' @importFrom readr read_lines
+#' @importFrom stringr str_to_lower
+#' @importFrom tibble tibble
+#' @importFrom dplyr count
+#'
+freqlist_create_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
+                                corpus_file_names = "one corpus file per operation",
+                                case_insensitive = TRUE) {
+  for (i in seq_along(corpus_file_names)) {
+    corpora <- read_lines(file = corpus_file_names[i])
+    cat('"', corpus_file_names[i], '" ', "has been loaded!\n", sep = "")
+    cat('Now tokenising the corpus into word-tokens!\n')
+    wtoken <- stringr::str_split(corpora, stringr::regex(split_regex, ignore_case = case_insensitive))
+    wtoken <- unlist(wtoken)
+    wtoken <- wtoken[nzchar(wtoken)]
+    wtoken <- stringr::str_to_lower(wtoken)
+    word_q <- rlang::sym(sprintf("word"))
+    cat('Generating the frequency list...\n')
+    freqlist <- tibble::tibble(!!word_q := wtoken)
+    freqlist <- dplyr::count(freqlist, !!word_q, sort = TRUE)
+    cat('Done!\n')
+  }
+  return(freqlist)
 }
 
 #' Read in the wordlist files of the Leipzig Corpora
@@ -176,9 +219,10 @@ wordlist_leipzig_read <- function(wlist_path = wordlist_corpus_path, file_patter
 }
 
 #' Summarise wordlist count across corpus
-#' @description function to summarise the wordlist by removing the \code{corpus} variable derived via \code{\link{create_wordlist()}}.
-#' @param df a tibble data frame containing wordlist derived via the \code{\link{create_wordlist()}}.
-#' @param descending whether the list is ordered increasingly and vice versa according to the token frequency
+#' @description function to summarise the wordlist by removing the \code{corpus} variable derived via \code{\link{freqlist_create}}.
+#' @param df a tibble data frame containing wordlist derived via the \code{\link{freqlist_create}}.
+#' @param group_var variable to group by.
+#' @param descending whether the list is ordered increasingly and vice versa according to the token frequency.
 #' @importFrom dplyr enquo
 #' @importFrom dplyr %>%
 #' @importFrom dplyr group_by
@@ -186,10 +230,33 @@ wordlist_leipzig_read <- function(wlist_path = wordlist_corpus_path, file_patter
 #' @importFrom dplyr arrange
 #' @importFrom dplyr desc
 #' @return a tibble
-wordlist_summarise <- function(df, group_var = "variable to group_by", descending = TRUE) {
-  group_var <- enquo(group_var)
+#' @examples
+#' \dontrun{
+#' regex <- "\\bmemberi(kan)?\\b"
+#' corpus.path <- corpus_files_path[1:2]
+#'
+#' # Generate the freqlist of the pattern
+#' wlist <- freqlist_create(pattern = regex,
+#'                          corpus_file_names = corpus.path,
+#'                          case_insensitive = TRUE)
+#'
+#' wlist
+#' A tibble: 4 x 3
+#' match      corpus_id              n
+#' <chr>      <chr>              <int>
+#'  1 memberi    ind_mixed_2012_1M   6394
+#'  2 memberikan ind_mixed_2012_1M  11710
+#'  3 memberi    ind_news_2008_300K  2214
+#'  4 memberikan ind_news_2008_300K  5213
+#'
+#' # Summarise the match
+#' freqlist_summarise(wlist, match, T)
+#' }
+
+freqlist_summarise <- function(df, group_var = "variable to group by", descending = TRUE) {
+  group.var <- enquo(group_var)
   out <- df %>%
-    group_by(!!group_var) %>%
+    group_by(!!group.var) %>%
     summarise(n = sum(n))
   if (descending == TRUE) {
     return(arrange(out, desc(n)))
@@ -199,31 +266,16 @@ wordlist_summarise <- function(df, group_var = "variable to group_by", descendin
 }
 
 
-
-# function to check the corpus file in which a word is found
-# PARAMETER
-# @df = a tibble data frame containing wordlist derived via the 'create_wordlist()' function
-# @regex = regular expressions/strings for the searched words/expressions
-check_wordlist_corpus <- function(df=NULL, regex=NULL) {
-  out1 <- df %>%
-    filter(str_detect(match, regex))
-  out_corpus <- out1 %>%
-    .$corpus_id %>%
-    str_c(collapse="|")
-  outall <- list(df=out1, corpus=out_corpus)
-  return(outall)
-}
-
-
 #' Check full sentence-citation for a pattern
 
-#' @description function to get a sentence citation for a match. This function can be used to check the full sentence in which a word/pattern occur in a corpus. This can be a useful follow-up upon inspecting the wordlist results derived via \code{\link{create_wordlist()}} function.
-#' @param pattern regular expressions/strings of the target words/patterns
+#' @description A function to retrieve a full-sentence citation for a match/pattern. This function can be used to check the full sentence in which a word/pattern occur in a corpus.
+#'     This can be a useful follow-up upon inspecting the wordlist results derived via \code{\link{freqlist_create}} function.
+#' @param pattern regular expressions/strings of the target words/patterns.
 #' @param corpus_file_names complete file path of the Leipzig corpora to search for full citation of the words/patterns of interest.
-#' @param case_insensitive whether to search case-insensitive pattern (TRUE) or not (FALSE).
+#' @param case_insensitive whether to search case-insensitive pattern (\code{TRUE} -- the default) or not (\code{FALSE}).
 #' @return character vectors containing the info for 'corpus names', 'sentence number', and 'sentence match'.
 
-get_citation_match <- function(pattern = NULL, corpus_file_names = corpus_files_path, case_insensitive = TRUE) {
+freqlist_citation <- function(pattern = NULL, corpus_file_names = corpus_files_path, case_insensitive = TRUE) {
   sent <- vector()
   out <- concord_leipzig_tidy(pattern = pattern, corpus_file_names, case_insensitive = case_insensitive)
   cat("Collecting full-citation(s) for the search word(s) done!\nOutput format: CORPUS - SENTENCE_NUMBER - CITATION(S)\n-------------------------------------------------------\n")
@@ -235,12 +287,13 @@ get_citation_match <- function(pattern = NULL, corpus_file_names = corpus_files_
 
 #' Generate Leipzig corpus-size
 #
-#' @description function to get a total word-token count of a given leipzig corpus file
+#' @description function to get a total word-token count of a given leipzig corpus file.
+#'     It is built on top of \code{\link[stringr]{str_count}}.
 #' @param word_regex regular expressions defining what "a word" is
 #' @param corpus_file_names file path to the directory folder in which the Leipzig corpus files are stored
 #' @return tibble containing \code{corpus_id}, \code{size}, and \code{size_print} (for text-printing)
 
-leipzig_corpus_size <- function(word_regex = "\\b(?i)([-a-z0-9]+)\\b", corpus_file_names = corpus_files_path) {
+leipzig_count_size <- function(word_regex = "\\b(?i)([-a-zA-Z0-9]+)\\b", corpus_file_names = corpus_files_path) {
 
   corpus_id <- str_replace_all(basename(corpus_file_names), "-sentences.txt", "")
   corpus_path <- corpus_file_names
@@ -256,13 +309,13 @@ leipzig_corpus_size <- function(word_regex = "\\b(?i)([-a-z0-9]+)\\b", corpus_fi
     # total word count
     corp_count <- corpora %>%
       str_replace("^\\d+?\\s", "") %>%
-      str_count(word_regex) %>%
+      str_count(regex(pattern = word_regex)) %>%
       sum()
     rm(corpora)
     cat('Done counting total words for "', corpus_id[i], '"... (', format(corp_count, big.mark = ","), ' word-tokens)\n\n', sep = "")
     total_word <- c(total_word, corp_count)
   }
-  out <- tibble(corpus_id, size=total_word, size_print=format(total_word, big.mark = ","))
+  out <- tibble(corpus_id, size = total_word, size_print = format(total_word, big.mark = ","))
   cat("Total size of the corpus files (in word-tokens).\n")
   return(out)
 }

@@ -8,22 +8,25 @@ concord_leipzig_tidy(pattern = NULL, corpus_file_names = NULL,
   case_insensitive = TRUE)
 }
 \arguments{
-\item{pattern}{regular expressions/exact patterns for the target pattern}
+\item{pattern}{regular expressions/exact patterns for the target pattern.}
 
-\item{corpus_file_names}{(i) file names of the corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig corpus files}
+\item{corpus_file_names}{(i) file names of the corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.}
 
-\item{case_insensitive}{whether the search ignores case (TRUE -- the default) or not (FALSE)}
+\item{case_insensitive}{whether the search ignores case (TRUE -- the default) or not (FALSE).}
 }
 \value{
-A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern}; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view; (iv) and full \code{sentences} of the matches, with the \code{pattern} being replaced with "nodeword".
+A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view; (iv) and full \code{sentences} of the matches, with the \code{pattern} being replaced with "nodeword".
 }
 \description{
 The function produces tibble-output concordances for Leipzig Corpora files.
 }
 \examples{
-Do not run!
-# 1. Generate concordance of a pattern from multiple corpus files
+\dontrun{
+# load the required packages
+library(tidyverse)
+library(corplingr)
 
+# 1. Generate concordance of a pattern from multiple corpus files
 corpus_files_path <- c("/Your/Path/to/Leipzig/corpora_1.txt",
 "/Your/Path/to/Leipzig/corpora_2.txt")
 
@@ -35,7 +38,9 @@ str(concord)
 
 concord_leipzig_tidy("menjalani", corpus_files_path) \%>\%
 
+# retain only the concordance, corpus name and sentence id
 select(-start, -end, -node_sentences) \%>\%
 
 write_delim(path = "my_concordance.txt", delim = "\\t")
+}
 }

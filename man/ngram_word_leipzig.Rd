@@ -25,7 +25,7 @@ a list of two elements: (A) tibble consisting of (i) \code{ngram} and (ii) \code
 The function generates word ngram from input vector of texts. The function requires input-vector of sentences from the Leipzig Corpora as its elements. The sentences should begin and end with "SENT" element so as user can identify and remove ngram that cross the sentence boundary. This is important because the sentences in the Leipzig Corpora are not related to one another (i.e., randomised). The sentences are split into word tokens and the script generates the ngrams from these word vectors.
 }
 \examples{
-
+\dontrun{
 # load the corplingr package
 devtools::load_all("~/Documents/_my_r_packages/corplingr")
 
@@ -37,5 +37,7 @@ sentence_cleaned <- paste("SENT", sentence_cleaned, "SENT", sep = " ")
 
 # generate the ngram
 ngram_out <- ngram_word_leipzig(input = sentence_cleaned, gram_length = 2, split = "[^a-z]+", case_insensitive = TRUE, sample_n = NULL)
+
+}
 
 }

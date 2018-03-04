@@ -8,17 +8,17 @@ colloc_extract(corpus = "corpus vector", pattern = "regex", window = "b",
   span = "numeric", gathered = FALSE, case_insensitive = TRUE)
 }
 \arguments{
-\item{corpus}{a raw corpus vector loaded via \code{scan()} or \code{readr::read_lines()}}
+\item{corpus}{a raw corpus vector loaded via \code{scan()} or \code{\link[readr]{read_lines}}.}
 
-\item{window}{window-span direction of the collocates: \code{"r"} ('right of the node'), \code{"l"} ('left of the node'), or the DEFAULT is \code{"b"} ('both window')}
+\item{pattern}{regular expressions/strings for node-word to search in the corpus.}
 
-\item{span}{numeric vector indicating the span of the collocate scope}
+\item{window}{window-span direction of the collocates: \code{"r"} ('right of the node'), \code{"l"} ('left of the node'), or the DEFAULT is \code{"b"} ('both window').}
 
-\item{gathered}{whether the output table should be in tidy format (\code{TRUE}) or not (\code{FALSE} -- default). This makes use of \code{tidyr}'s \code{gather()}.}
+\item{span}{numeric vector indicating the span of the collocate scope.}
+
+\item{gathered}{whether the output table should be in tidy format (\code{TRUE}) or not (\code{FALSE} -- default). This makes use of \code{tidyr}'s \code{\link[tidyr]{gather}}.}
 
 \item{case_insensitive}{whether the search ignore case (\code{TRUE} -- default) or not (\code{FALSE})}
-
-\item{patterns}{regular expressions/strings for node-word to search in the corpus}
 }
 \value{
 collocates-tibble consisting of the \code{patterns} and collocates per \code{span} as individual columns
@@ -27,8 +27,7 @@ collocates-tibble consisting of the \code{patterns} and collocates per \code{spa
 The function produces window-span collocates in the following scheme: ...\\scolloc\\scolloc\\sNODE\\scolloc\\scolloc\\s...
 }
 \examples{
-Do not run!
-
+\dontrun{
 # load a Leipzig corpus file
 corpus <- readr::read_lines(corpus_files_path[2])
 
@@ -38,4 +37,6 @@ colloc <- colloc_extract(corpus, "\\\\bmemberi\\\\b", "r", 2)
 # explore the output
 colloc \%>\%
 filter(!r2 \%in\% c("kepada", "bagi", "untuk", "terhadap", "ke"))
+}
+
 }

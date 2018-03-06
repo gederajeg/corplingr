@@ -46,6 +46,7 @@
 #'
 #' write_delim(path = "my_concordance.txt", delim = "\t")
 #' }
+#' @export
 
 
 

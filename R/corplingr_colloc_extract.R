@@ -27,7 +27,7 @@
 #' colloc %>%
 #' filter(!r2 %in% c("kepada", "bagi", "untuk", "terhadap", "ke"))
 #' }
-#'
+#' @export
 
 
 colloc_extract <- function(corpus_vector = "corpus vector",

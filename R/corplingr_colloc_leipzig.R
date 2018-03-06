@@ -54,7 +54,7 @@
 #'
 #' colloc$sentence_matches
 #' }
-#'
+#' @export
 
 
 #corpus = corpus_files_path[2:3]

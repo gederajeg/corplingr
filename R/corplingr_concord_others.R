@@ -69,6 +69,7 @@
 #' @importFrom stringr str_trim
 #' @importFrom tibble as_tibble
 #' @importFrom tibble tibble
+#' @export
 
 concord_others <- function(corpus_vector, pattern, lower_case = TRUE, case_insensitive = TRUE, context_char = 50) {
 

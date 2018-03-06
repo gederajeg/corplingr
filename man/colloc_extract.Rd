@@ -39,5 +39,4 @@ colloc <- colloc_extract(corpus_vector = corpus, pattern = "\\\\bmemberi\\\\b", 
 colloc \%>\%
 filter(!r2 \%in\% c("kepada", "bagi", "untuk", "terhadap", "ke"))
 }
-
 }

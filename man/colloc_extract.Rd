@@ -22,7 +22,8 @@ colloc_extract(corpus_vector = "corpus vector", pattern = "regex",
 \item{case_insensitive}{whether the search ignore case (\code{TRUE} -- default) or not (\code{FALSE})}
 }
 \value{
-collocates-tibble consisting of the \code{patterns} and collocates per \code{span} as individual columns
+A tbl_df of collocates consisting of the \code{patterns}, \code{node} words, and the collocates as values of each of the specified \code{span} as individual columns (when \code{gathered} is \code{FALSE}).
+    When \code{gathered} is set to \code{TRUE}, the results consist of four columns: (i) \code{patterns}, (ii) \code{node}, (iii) \code{collocates}, and (iv) \code{span}.
 }
 \description{
 The function produces window-span collocates in the following scheme: ...\\scolloc\\scolloc\\sNODE\\scolloc\\scolloc\\s... in which \code{"\\\s"} stands for 'white space'.

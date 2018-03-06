@@ -17,6 +17,7 @@
 #' @importFrom stringr regex
 #' @importFrom readr read_lines
 #' @importFrom stringr str_to_lower
+#' @importFrom stringr str_replace
 #' @importFrom tibble tibble
 #' @importFrom dplyr count
 #' @importFrom utils menu
@@ -31,7 +32,7 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
                    title = "If you wish to continue, type-in '1' into the console (without the quote!); otherwise, type-in '2'.")
     if (choice == 1) {
       freqlist_all <- vector(mode = "list", length = length(corpus_file_names))
-      names(freqlist_all) <- basename(corpus_file_names)
+      names(freqlist_all) <- stringr::str_replace(basename(corpus_file_names), "-sentences\\..+$", "")
     } else {
       messages <- "You decided to exit the operation!"
       return(print(messages))

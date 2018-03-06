@@ -33,16 +33,18 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
       freqlist_all <- vector(mode = "list", length = length(corpus_file_names))
       names(freqlist_all) <- basename(corpus_file_names)
     } else {
-      cat("You decided to exit the operation!\n")
+      messages <- "You decided to exit the operation!"
+      return(print(messages))
     }
 
   } else if (length(corpus_file_names) == 1) {
     freqlist <- tibble::tibble()
   }
   for (i in seq_along(corpus_file_names)) {
+    cat("Reading-in the corpus file...\n")
     corpora <- readr::read_lines(file = corpus_file_names[i])
-    cat('"', corpus_file_names[i], '" ', "has been loaded!\n", sep = "")
-    cat('Now tokenising the corpus into word-tokens!\n')
+    cat('"', basename(corpus_file_names[i]), '" ', "has been loaded!\n", sep = "")
+    cat('Tokenising the corpus into word-tokens...\n')
     wtoken <- stringr::str_split(corpora,
                                  stringr::regex(pattern = split_regex,
                                                 ignore_case = case_insensitive))
@@ -58,7 +60,7 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
       cat('Done!\n')
     } else if (length(corpus_file_names) > 1) {
       freqlist_all[i] <- list(freqlist)
-      cat(paste("Done with corpus no. ", i, "...\n\n", sep = ""))
+      cat(paste("Done with corpus no. ", i, "!\n\n", sep = ""))
     }
   }
   return(freqlist_all)

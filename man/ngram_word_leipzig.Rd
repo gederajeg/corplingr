@@ -36,7 +36,10 @@ load(corpus_cleaned_path[1])
 sentence_cleaned <- paste("SENT", sentence_cleaned, "SENT", sep = " ")
 
 # generate the ngram
-ngram_out <- ngram_word_leipzig(input = sentence_cleaned, gram_length = 2, split = "[^a-z]+", case_insensitive = TRUE, sample_n = NULL)
+ngram_out <- ngram_word_leipzig(input = sentence_cleaned,
+                                gram_length = 2, split = "[^a-z]+",
+                                case_insensitive = TRUE,
+                                sample_n = NULL)
 
 }
 

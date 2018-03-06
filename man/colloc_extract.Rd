@@ -4,11 +4,12 @@
 \alias{colloc_extract}
 \title{Generate tidyverse-style sequential, ngram-like collocates}
 \usage{
-colloc_extract(corpus = "corpus vector", pattern = "regex", window = "b",
-  span = "numeric", gathered = FALSE, case_insensitive = TRUE)
+colloc_extract(corpus_vector = "corpus vector", pattern = "regex",
+  window = "b", span = "numeric", gathered = FALSE,
+  case_insensitive = TRUE)
 }
 \arguments{
-\item{corpus}{a raw corpus vector loaded via \code{scan()} or \code{\link[readr]{read_lines}}.}
+\item{corpus_vector}{a raw corpus vector loaded via \code{scan} or \code{\link[readr]{read_lines}}.}
 
 \item{pattern}{regular expressions/strings for node-word to search in the corpus.}
 
@@ -24,7 +25,7 @@ colloc_extract(corpus = "corpus vector", pattern = "regex", window = "b",
 collocates-tibble consisting of the \code{patterns} and collocates per \code{span} as individual columns
 }
 \description{
-The function produces window-span collocates in the following scheme: ...\\scolloc\\scolloc\\sNODE\\scolloc\\scolloc\\s...
+The function produces window-span collocates in the following scheme: ...\\scolloc\\scolloc\\sNODE\\scolloc\\scolloc\\s... in which \code{"\\\s"} stands for 'white space'.
 }
 \examples{
 \dontrun{
@@ -32,7 +33,7 @@ The function produces window-span collocates in the following scheme: ...\\scoll
 corpus <- readr::read_lines(corpus_files_path[2])
 
 # search right-side collocates within two words from the node
-colloc <- colloc_extract(corpus, "\\\\bmemberi\\\\b", "r", 2)
+colloc <- colloc_extract(corpus_vector = corpus, pattern = "\\\\bmemberi\\\\b", window = "r", span = 2)
 
 # explore the output
 colloc \%>\%

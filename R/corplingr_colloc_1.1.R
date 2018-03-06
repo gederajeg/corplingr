@@ -42,7 +42,7 @@
 #' @importFrom dplyr %>%
 #' @examples
 #' \dontrun{
-#' colloc <- colloc_leipzig_tidy(corpus = corpus_files_path[2:3],
+#' colloc <- colloc_leipzig(corpus = corpus_files_path[2:3],
 #'                               pattern = "\\bterelakkan\\b",
 #'                               window = "b",
 #'                               span = 3,
@@ -69,7 +69,7 @@
 #s = 1
 
 
-colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
+colloc_leipzig <- function(corpus = "path to leipzig corpus",
                                     pattern = "regex",
                                     window = "b",
                                     span = 2,
@@ -153,21 +153,21 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
         for (s in seq_along(sent.with.match)) {
 
           if (position[s,1]==1) {
-            node <- str_sub(sent.with.match[s], position[s,1], position[s,2])
-            right <- str_sub(sent.with.match[s], position[s,2]+1, nchar(sent.with.match[s]))
-            sent.match.tagged <- str_c("NODEWORD", right, sep = "")
-            sent.match.tagged_1 <- str_c("<node>", node, "</node>", right, sep = "")
+            node <- stringr::str_sub(sent.with.match[s], position[s,1], position[s,2])
+            right <- stringr::str_sub(sent.with.match[s], position[s,2]+1, nchar(sent.with.match[s]))
+            sent.match.tagged <- stringr::str_c("NODEWORD", right, sep = "")
+            sent.match.tagged_1 <- stringr::str_c("<node>", node, "</node>", right, sep = "")
           } else if (position[s,2] == nchar(sent.with.match[s])) {
-            node <- str_sub(sent.with.match[s], position[s,1], position[s,2])
-            left <- str_sub(sent.with.match[s], 1, position[s,1]-1)
-            sent.match.tagged <- str_c(left, "NODEWORD", sep = "")
-            sent.match.tagged_1 <- str_c(left, "<node>", node, "</node>", sep = "")
+            node <- stringr::str_sub(sent.with.match[s], position[s,1], position[s,2])
+            left <- stringr::str_sub(sent.with.match[s], 1, position[s,1]-1)
+            sent.match.tagged <- stringr::str_c(left, "NODEWORD", sep = "")
+            sent.match.tagged_1 <- stringr::str_c(left, "<node>", node, "</node>", sep = "")
           } else if (position[s,1] != 1 & position[s,2] != nchar(sent.with.match[s])) {
-            node <- str_sub(sent.with.match[s], position[s,1], position[s,2])
-            right <- str_sub(sent.with.match[s], position[s,2]+1, nchar(sent.with.match[s]))
-            left <- str_sub(sent.with.match[s], 1, position[s,1]-1)
-            sent.match.tagged <- str_c(left, "NODEWORD", right, sep = "")
-            sent.match.tagged_1 <- str_c(left, "<node>", node, "</node>", right, sep = "")
+            node <- stringr::str_sub(sent.with.match[s], position[s,1], position[s,2])
+            right <- stringr::str_sub(sent.with.match[s], position[s,2]+1, nchar(sent.with.match[s]))
+            left <- stringr::str_sub(sent.with.match[s], 1, position[s,1]-1)
+            sent.match.tagged <- stringr::str_c(left, "NODEWORD", right, sep = "")
+            sent.match.tagged_1 <- stringr::str_c(left, "<node>", node, "</node>", right, sep = "")
           } else if (position[s,1] == 1 & position[s,2] == nchar(sent.with.match[s])) {
             next
           }
@@ -184,7 +184,7 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
 
           if (tolower_colloc == TRUE) {
             colloc <- colloc %>%
-              mutate(w = stringr::str_to_lower(w))
+              dplyr::mutate(w = stringr::str_to_lower(w))
           } else {
             colloc <- colloc
           }
@@ -192,7 +192,7 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
 
           # calculate the collocate position of each words in relation to the node word
           colloc.vector.pos <- colloc[-1] %>%
-            filter(str_detect(w, regex("nodeword", ignore_case = TRUE))) %>% # get the vector position of the node
+            dplyr::filter(stringr::str_detect(w, stringr::regex("nodeword", ignore_case = TRUE))) %>% # get the vector position of the node
             .$vector.pos + span # get the span vector-position for the collocates
           colloc.vector.pos <- colloc.vector.pos[colloc.vector.pos<=dim(colloc)[1] & colloc.vector.pos > 0]
 
@@ -201,44 +201,44 @@ colloc_leipzig_tidy <- function(corpus = "path to leipzig corpus",
           } else {
             # retrive the collocates and left_join them with their span ID
             colloc <- colloc %>%
-              left_join(colloc.vector.pos %>%
-                          tibble(wspan = names(.),
+              dplyr::left_join(colloc.vector.pos %>%
+                          tibble::tibble(wspan = names(.),
                                  vector.pos = .),
-                        by='vector.pos') %>%
-              filter(!is.na(wspan)) %>%
-              mutate(corpus = corpus_name,
+                        by = 'vector.pos') %>%
+              dplyr::filter(!is.na(wspan)) %>%
+              dplyr::mutate(corpus = corpus_name,
                      sent = sent_id[s]) %>%
-              select(w, vector.pos, wspan, corpus, sent, string) %>%
-              mutate(w = str_replace(w, "nodeword", node))
+              dplyr::select(w, wspan, corpus, sent, string) %>%
+              dplyr::mutate(w = stringr::str_replace(w, "nodeword", node))
             #colloc <- colloc %>%
             # mutate(tag=if_else(wspan=='node',
-            #                   str_c("<node>", w, "</node>", sep=""),
-            #                  str_c("<coll span=", wspan, ">", w, "</coll>", sep="")))
+            #                   stringr::str_c("<node>", w, "</node>", sep=""),
+            #                  stringr::str_c("<coll span=", wspan, ">", w, "</coll>", sep="")))
 
             # tag the sentence match with the collocate id and create a separate dbase from the collocate list
-            counterfulltext <- tibble(corpus = unique(colloc$corpus),
+            counterfulltext <- tibble::tibble(corpus = unique(colloc$corpus),
                                       sent.no = unique(colloc$sent),
                                       node = node,
                                       sent = sent.with.match[s])
 
             # gather all collocates
-            all_colloc <- bind_rows(all_colloc, colloc)
+            all_colloc <- dplyr::bind_rows(all_colloc, colloc)
             rm(colloc)
-            all_sentmatches <- bind_rows(all_sentmatches, counterfulltext)
-            p$pause(0.1)$tick()$print()
+            all_sentmatches <- dplyr::bind_rows(all_sentmatches, counterfulltext)
+            p$pause(0.05)$tick()$print()
             if (s == length(sent.with.match)) {
               cat("\nDone gathering the collocates for each sentence!\n\n")
             }
           }
         } # end of "s" loop
       }
-      colloc_all <- bind_rows(colloc_all, all_colloc)
-      sentmatch_all <- bind_rows(sentmatch_all, all_sentmatches)
+      colloc_all <- dplyr::bind_rows(colloc_all, all_colloc)
+      sentmatch_all <- dplyr::bind_rows(sentmatch_all, all_sentmatches)
     } # end of "r" loop
   } # end of "c" loop
   if (save_results == TRUE) {
-    write_delim(x = colloc_all, path = coll_output_name, delim = "\t", append = TRUE)
-    write_delim(x = sentmatch_all, path = sent_output_name, delim="\t", append = TRUE)
+    readr::write_delim(x = colloc_all, path = coll_output_name, delim = "\t", append = TRUE)
+    readr::write_delim(x = sentmatch_all, path = sent_output_name, delim="\t", append = TRUE)
     cat("Collocates table and sentence match of the node have been saved!\n\n")
   } else {
     out <- list(colloc_all, sentmatch_all)

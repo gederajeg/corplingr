@@ -117,7 +117,7 @@ freqlist_create_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
     word_q <- rlang::sym(sprintf("word"))
     cat('Generating the frequency list...\n')
     freqlist <- tibble::tibble(!!word_q := wtoken)
-    freqlist <- dplyr::count(freqlist, !!word_q, sort = TRUE)
+    freqlist <- dplyr::count(freqlist, word, sort = TRUE)
     cat('Done!\n')
   }
   return(freqlist)

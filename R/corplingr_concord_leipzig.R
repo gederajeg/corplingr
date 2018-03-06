@@ -13,6 +13,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr filter
 #' @importFrom stringr str_which
+#' @importFrom stringr str_length
 #' @importFrom stringr str_locate_all
 #' @importFrom stringr str_count
 #' @importFrom stringr str_replace_all
@@ -20,6 +21,8 @@
 #' @importFrom stringr str_sub
 #' @importFrom stringr str_trim
 #' @importFrom stringr str_sub<-
+#' @importFrom rlang sym
+#' @importFrom rlang :=
 #' @examples
 #' \dontrun{
 #' # load the required packages
@@ -30,13 +33,13 @@
 #' corpus_files_path <- c("/Your/Path/to/Leipzig/corpora_1.txt",
 #' "/Your/Path/to/Leipzig/corpora_2.txt")
 #'
-#' concord <- concord_leipzig_tidy(pattern = "menjalani", corpus_file_names = corpus_files_path)
+#' concord <- concord_leipzig(pattern = "menjalani", corpus_file_names = corpus_files_path)
 #' str(concord)
 #'
 #'
 #' # 2. Combine with pipe "%>%" and other tidyverse suits!
 #'
-#' concord_leipzig_tidy("menjalani", corpus_files_path) %>%
+#' concord_leipzig("menjalani", corpus_files_path) %>%
 #'
 #' # retain only the concordance, corpus name and sentence id
 #' select(-start, -end, -node_sentences) %>%
@@ -46,7 +49,7 @@
 
 
 
-concord_leipzig_tidy <- function(pattern = NULL, corpus_file_names = NULL, case_insensitive = TRUE) {
+concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insensitive = TRUE) {
 
   # a tibble-dataframe for storing output from all corpus files
   full_concordance <- tibble()
@@ -66,8 +69,8 @@ concord_leipzig_tidy <- function(pattern = NULL, corpus_file_names = NULL, case_
       cat('"', basename(corpus_file_names[i]), '" ', "has been loaded!\n", sep = "")
 
       # retrieve the corpus names
-      corpus_id <- basename(corpus_file_names[i]) %>%
-      str_replace('-sentences.*$', '')
+      corpus_id <- basename(corpus_file_names[i])
+      corpus_id <- stringr::str_replace(corpus_id, '-sentences.*$', '')
     }
 
     for (r in seq_along(pattern)) {
@@ -75,67 +78,55 @@ concord_leipzig_tidy <- function(pattern = NULL, corpus_file_names = NULL, case_
       cat("Searching pattern no. ", r, " in corpus no. ", i, "!\n", sep = "")
 
       # detect the search pattern and retrieve the citation with the match
-      match.id <- str_which(corpora, regex(pattern[r], ignore_case = case_insensitive))
-      subcorpus <- corpora[match.id]
+      match_id <- stringr::str_which(corpora, stringr::regex(pattern[r], ignore_case = case_insensitive))
+      sub_corpus <- corpora[match_id]
 
       # store the sentence number in which the match is found
-      sent_id <- match.id
+      sent_id <- match_id
 
       # detect if any matches found
-      if (length(subcorpus) == 0) {
+      if (length(sub_corpus) == 0) {
 
         cat("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus!\n\n")
 
       } else {
 
-        cat("At least one match for the search pattern is detected in the corpus!\n\n")
-
-        match_length <- str_count(subcorpus, regex(pattern[r], ignore_case = case_insensitive)) # get the number of matches of the search word found in the corpus
-
-        sent.with.match <- rep(subcorpus, match_length) # replicate the sentences/string based on the number of matches found in the string
-
+        cat("At least one match for the search pattern is detected in the corpus!\n")
+        match_length <- stringr::str_count(sub_corpus,
+                                           stringr::regex(pattern[r],
+                                                          ignore_case = case_insensitive)) # get the number of matches of the search word found in the corpus
+        sent_with_match <- rep(sub_corpus, match_length) # replicate the sentences/string based on the number of matches found in the string
         sent_id <- rep(sent_id, match_length) # replicate the sentence numbers/IDs based on the number of matches found in the string
-
         corpus_id <- rep(corpus_id, sum(match_length)) # replicate the corpus file names based on the number of matches found in the string
-
-        position <- str_locate_all(subcorpus, regex(pattern[r], ignore_case = case_insensitive)) # get the starting and end position of the pattern
-
+        position <- stringr::str_locate_all(sub_corpus,
+                                            stringr::regex(pattern[r],
+                                                           ignore_case = case_insensitive)) # get the starting and end position of the pattern
+        sent_quo <- rlang::sym(sprintf("sentences"))
         position_tidy <- position %>% # get all starting and end position into a tidy 'tibble'
-          map(as_tibble) %>% # change the matrix in each position list into a tibble
-          map_df(bind_rows) %>% # return the listed tibble into a single tibble
-          mutate(sentences = sent.with.match) # add the matched sentences into the tibble of the starting and end position
+          purrr::map(as_tibble) %>% # change the matrix in each position list into a tibble
+          purrr::map_df(bind_rows) %>% # return the listed tibble into a single tibble
+          dplyr::mutate(!!sent_quo := sent_with_match) # add the matched sentences into the tibble of the starting and end position
 
         # generate a concordance table
         concordance <- position_tidy %>%
-
           mutate(corpus = corpus_id,
-
                  sent_id = sent_id,
-
-                 left = str_sub(sentences, start = 1, end = start-1), # get the left context
-
-                 left = left %>% # remove the sentence id from the left context
-                   str_trim(), # remove leading whitespace
-
-                 left = replace(left, nchar(left)<=0, "~"),
-
-                 node = str_sub(sentences, start = start, end = end) %>%  # get the node
-                   str_trim(), # remove the leading and trailing whitespace
-
-                 right = str_sub(sentences, start = end+1, end = str_length(sentences)) %>% # get the right context
-                   str_trim(), # remove the trailing whitespace
-
+                 left = stringr::str_sub(sentences, start = 1, end = start-1),
+                 left = stringr::str_trim(left),
+                 left = replace(left, nchar(left) <= 0, "~"),
+                 node = stringr::str_trim(stringr::str_sub(sentences, start = start, end = end)),
+                 right = stringr::str_trim(stringr::str_sub(sentences, start = end+1, end = stringr::str_length(sentences))),
                  right = replace(right, nchar(right)<=0, "~"),
-
                  node_sentences = stringr::`str_sub<-`(sentences, start = start, end = end, value = "nodeword")) %>%
-
-          select(-sentences) # set the search word into <NODE>
+          select(-sentences)
 
         full_concordance <- bind_rows(full_concordance, concordance)
+
         rm(corpora)
       }
     }
   }
+  cat("Done!\n")
   return(full_concordance)
 }
 

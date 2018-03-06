@@ -2,11 +2,11 @@
 #'
 #' @description The function generates a tidy concordance for a search pattern in a (set of) corpus (files).
 #'     The function requires the corpus file(s) loaded and ready in the console as a vector of text with more than one line of texts/sentences. See \bold{Examples} below for details.
-#' @param corpus.vect the vector of corpus texts.
+#' @param corpus_vector the vector of corpus texts.
 #' @param pattern regular expressions for the search pattern.
-#' @param lower.case whether to lower case the corpus (\code{TRUE} -- the default) first or leave it as is (\code{FALSE}).
-#' @param case.insensitive whether to ignore the case for the search \code{pattern} argument (\code{TRUE} -- the default) or not (\code{FALSE}).
-#' @param context.char integer vector for the specified number of character as context to the left and right of the node pattern.
+#' @param lower_case whether to lower case the corpus (\code{TRUE} -- the default) first or leave it as is (\code{FALSE}).
+#' @param case_insensitive whether to ignore the case for the search \code{pattern} argument (\code{TRUE} -- the default) or not (\code{FALSE}).
+#' @param context_char integer vector for the specified number of character as context to the left and right of the node pattern.
 #' @return A tibble/data frame for the concordance match with \code{LEFT} and \code{RIGHT} contexts.
 #' @examples
 #' \dontrun{
@@ -35,11 +35,11 @@
 #'
 #'
 #' # get concordance for a pattern
-#' concordance <- concord_others_tidy(corpus.vect = corp,
+#' concordance <- concord_others(corpus_vector = corp,
 #'                                    pattern = "\\bmemandang\\b",
-#'                                    lower.case = TRUE,
-#'                                    case.insensitive = TRUE,
-#'                                    context.char = 100)
+#'                                    lower_case = TRUE,
+#'                                    case_insensitive = TRUE,
+#'                                    context_char = 100)
 #'
 #' # check the output
 #' str(concordance)
@@ -70,37 +70,50 @@
 #' @importFrom tibble as_tibble
 #' @importFrom tibble tibble
 
-concord_others_tidy <- function(corpus.vect, pattern, lower.case = TRUE, case.insensitive = TRUE, context.char = 50) {
+concord_others <- function(corpus_vector, pattern, lower_case = TRUE, case_insensitive = TRUE, context_char = 50) {
 
   # subset the line/text containing the potential match
   regexpr <- pattern
-  if (lower.case == TRUE) {
-    corpus.vect <- stringr::str_to_lower(corpus.vect)
+  cat("Subsetting sentences containing the match...\n")
+  m <- corpus_vector %>%
+    stringr::str_subset(stringr::regex(regexpr, ignore_case = case_insensitive))
+
+  if ((length(m) >= 1) == TRUE) {
+
+    if (lower_case == TRUE) {
+      cat("Lowercasing the sentences with the match...\n")
+      m <- stringr::str_to_lower(m)
+    }
+
+    # detect the start and end character-location of the match
+    cat("Detecting the match/pattern...\n")
+    match_location <- stringr::str_locate_all(m, stringr::regex(regexpr, ignore_case = case_insensitive)) %>%
+      purrr::map(tibble::as_tibble) %>%
+      purrr::map_df(dplyr::bind_rows)
+
+    # duplicate the number of subset text as many as the number of the match
+    m1 <- rep(m, stringr::str_count(m, stringr::regex(regexpr, ignore_case = case_insensitive)))
+
+    # extract match & create concordance
+    cat("Generating the concordance for the match/pattern...\n")
+    node <- stringr::str_sub(m1, start = match_location$start, end = match_location$end)
+    node_tag <- stringr::str_c("\t<NODE>", node, "</NODE>\t", sep = "")
+    left <- stringr::str_sub(m1, start = 1, end = (match_location$start - 1))
+    right <- stringr::str_sub(m1, start = (match_location$end + 1), end = nchar(m1))
+    concord_df <- tibble::tibble(LEFT = stringr::str_sub(left, start = (nchar(left) - context_char), end = nchar(left)) %>%
+                                   dplyr::if_else(nchar(.) == 0, "~", .),
+                                 NODE = node,
+                                 RIGHT = stringr::str_sub(right, start = 1, end = context_char) %>%
+                                   dplyr::if_else(nchar(.) == 0, "~", .))
+    concord_df <- dplyr::mutate(concord_df,
+                                LEFT = stringr::str_trim(LEFT),
+                                NODE = stringr::str_trim(NODE),
+                                RIGHT = stringr::str_trim(RIGHT))
+    cat("Done!\n")
+    return(concord_df)
+  } else {
+    cat("Sorry; no match found! Try another corpus/pattern!\n")
   }
-  m <- corpus.vect %>%
-    stringr::str_subset(stringr::regex(regexpr, ignore_case = case.insensitive))
 
-  # detect the start and end character-location of the match
-  match_location <- stringr::str_locate_all(m, stringr::regex(regexpr, ignore_case = case.insensitive)) %>%
-    purrr::map(tibble::as_tibble) %>%
-    purrr::map_df(dplyr::bind_rows)
 
-  # duplicate the number of subset text as many as the number of the match
-  m1 <- rep(m, stringr::str_count(m, stringr::regex(regexpr, ignore_case = case.insensitive)))
-
-  # extract match & create concordance
-  node <- stringr::str_sub(m1, start = match_location$start, end = match_location$end)
-  node_tag <- stringr::str_c("\t<NODE>", node, "</NODE>\t", sep = "")
-  left <- stringr::str_sub(m1, start = 1, end = (match_location$start - 1))
-  right <- stringr::str_sub(m1, start = (match_location$end + 1), end = nchar(m1))
-  concord_df <- tibble::tibble(LEFT = stringr::str_sub(left, start = (nchar(left) - context.char), end = nchar(left)) %>%
-                                 dplyr::if_else(nchar(.) == 0, "~", .),
-                               NODE = node,
-                               RIGHT = stringr::str_sub(right, start = 1, end = context.char) %>%
-                                 dplyr::if_else(nchar(.) == 0, "~", .))
-  concord_df <- dplyr::mutate(concord_df,
-                              LEFT = stringr::str_trim(LEFT),
-                              NODE = stringr::str_trim(NODE),
-                              RIGHT = stringr::str_trim(RIGHT))
-  return(concord_df)
 }

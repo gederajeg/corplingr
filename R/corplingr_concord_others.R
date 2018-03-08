@@ -70,7 +70,6 @@
 #' @importFrom tibble as_tibble
 #' @importFrom tibble tibble
 #' @export
-
 concord_others <- function(corpus_vector, pattern, lower_case = TRUE, case_insensitive = TRUE, context_char = 50) {
 
   # subset the line/text containing the potential match
@@ -95,26 +94,27 @@ concord_others <- function(corpus_vector, pattern, lower_case = TRUE, case_insen
     # duplicate the number of subset text as many as the number of the match
     m1 <- rep(m, stringr::str_count(m, stringr::regex(regexpr, ignore_case = case_insensitive)))
 
-    # extract match & create concordance
+    # extract match
     cat("Generating the concordance for the match/pattern...\n")
     node <- stringr::str_sub(m1, start = match_location$start, end = match_location$end)
     node_tag <- stringr::str_c("\t<NODE>", node, "</NODE>\t", sep = "")
     left <- stringr::str_sub(m1, start = 1, end = (match_location$start - 1))
     right <- stringr::str_sub(m1, start = (match_location$end + 1), end = nchar(m1))
-    concord_df <- tibble::tibble(LEFT = stringr::str_sub(left, start = (nchar(left) - context_char), end = nchar(left)) %>%
-                                   dplyr::if_else(nchar(.) == 0, "~", .),
-                                 NODE = node,
-                                 RIGHT = stringr::str_sub(right, start = 1, end = context_char) %>%
-                                   dplyr::if_else(nchar(.) == 0, "~", .))
+
+    # create concordance
+    LEFT <- stringr::str_sub(left, start = (nchar(left) - context_char), end = nchar(left))
+    LEFT <- replace(LEFT, nchar(LEFT) == 0, "~")
+    NODE <- node
+    RIGHT <- stringr::str_sub(right, start = 1, end = context_char)
+    RIGHT <- replace(RIGHT, nchar(RIGHT) == 0, "~")
+    concord_df <- tibble::tibble(LEFT, NODE, RIGHT)
     concord_df <- dplyr::mutate(concord_df,
-                                LEFT = stringr::str_trim(LEFT),
-                                NODE = stringr::str_trim(NODE),
-                                RIGHT = stringr::str_trim(RIGHT))
+                                !!quo_name(quo(LEFT)) := stringr::str_trim(!!quo(LEFT)),
+                                !!quo_name(quo(NODE)) := stringr::str_trim(!!quo(NODE)),
+                                !!quo_name(quo(RIGHT)) := stringr::str_trim(!!quo(RIGHT)))
     cat("Done!\n")
     return(concord_df)
   } else {
     cat("Sorry; no match found! Try another corpus/pattern!\n")
   }
-
-
 }

@@ -58,21 +58,21 @@ concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insen
   for (i in seq_along(corpus_file_names)) {
 
     # read in the corpus text
-    if (any(str_detect(corpus_file_names, "corpus_sent_vector")) == TRUE) {
-      cat("Using cleaned vector corpus!\n")
-      load(corpus_file_names[i])
-      corpora <- sentence_cleaned; rm(corpus.sent.size, corpus.total.size)
-      corpus_id <- str_replace(str_replace(basename(corpus_file_names[i]), "corpus.+?__(?=ind)", ""),
-                               "\\.RData", "")
-      cat('"', corpus_id, '" ', "has been loaded!\n", sep = "")
-    } else {
+    #if (any(str_detect(corpus_file_names, "corpus_sent_vector")) == TRUE) {
+     # cat("Using cleaned vector corpus!\n")
+      #load(corpus_file_names[i])
+      #corpora <- sentence_cleaned#; rm(corpus.sent.size, corpus.total.size)
+      #corpus_id <- str_replace(str_replace(basename(corpus_file_names[i]), "corpus.+?__(?=ind)", ""),
+      #                         "\\.RData", "")
+      #cat('"', corpus_id, '" ', "has been loaded!\n", sep = "")
+    #} else {
       corpora <- read_lines(file = corpus_file_names[i])
       cat('"', basename(corpus_file_names[i]), '" ', "has been loaded!\n", sep = "")
 
       # retrieve the corpus names
       corpus_id <- basename(corpus_file_names[i])
       corpus_id <- stringr::str_replace(corpus_id, '-sentences.*$', '')
-    }
+    #}
 
     for (r in seq_along(pattern)) {
       # progress report
@@ -108,18 +108,20 @@ concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insen
           purrr::map_df(bind_rows) %>% # return the listed tibble into a single tibble
           dplyr::mutate(!!sent_quo := sent_with_match) # add the matched sentences into the tibble of the starting and end position
 
+        left <- rlang::sym(sprintf("left"))
+        right <- rlang::sym(sprintf("right"))
         # generate a concordance table
         concordance <- position_tidy %>%
           mutate(corpus = corpus_id,
                  sent_id = sent_id,
-                 left = stringr::str_sub(sentences, start = 1, end = start-1),
-                 left = stringr::str_trim(left),
-                 left = replace(left, nchar(left) <= 0, "~"),
-                 node = stringr::str_trim(stringr::str_sub(sentences, start = start, end = end)),
-                 right = stringr::str_trim(stringr::str_sub(sentences, start = end+1, end = stringr::str_length(sentences))),
-                 right = replace(right, nchar(right)<=0, "~"),
-                 node_sentences = stringr::`str_sub<-`(sentences, start = start, end = end, value = "nodeword")) %>%
-          select(-sentences)
+                 !!left := stringr::str_sub(!!sent_quo, start = 1, end = start-1),
+                 !!left := stringr::str_trim(!!left),
+                 !!left := replace(!!left, nchar(!!left) <= 0, "~"),
+                 node = stringr::str_trim(stringr::str_sub(!!sent_quo, start = start, end = end)),
+                 !!right := stringr::str_trim(stringr::str_sub(!!sent_quo, start = end+1, end = stringr::str_length(!!sent_quo))),
+                 !!right := replace(!!right, nchar(!!right)<=0, "~"),
+                 node_sentences = stringr::`str_sub<-`(!!sent_quo, start = start, end = end, value = "nodeword")) %>%
+          select(-!!sent_quo)
 
         full_concordance <- bind_rows(full_concordance, concordance)
 

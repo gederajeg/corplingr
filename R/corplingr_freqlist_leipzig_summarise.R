@@ -3,7 +3,7 @@
 #' @description function to summarise the wordlist by removing the \code{corpus} variable derived via \code{\link{freqlist_leipzig_each}} or \code{\link{freqlist_leipzig_all}}.
 #' @param df a tibble data frame containing wordlist derived via the \code{\link{freqlist_leipzig_each}} or \code{\link{freqlist_leipzig_all}}.
 #' @param group_var a bare (i.e. unquoted) variable name to group by.
-#' @param descending whether the list is ordered increasingly and vice versa according to the token frequency.
+#' @param descending whether the data is ordered in decreasing order according to the token frequency (\code{TRUE} -- the default) or in ascending order (\code{FALSE}).
 #' @importFrom dplyr enquo
 #' @importFrom dplyr %>%
 #' @importFrom dplyr group_by
@@ -36,7 +36,7 @@
 #' freqlist_summarise(df = wlist, group_var = match, descending = TRUE)
 #' }
 
-freqlist_leipzig_summarise <- function(df, group_var = "variable to group by", descending = TRUE) {
+freqlist_leipzig_summarise <- function(df, group_var = NULL, descending = TRUE) {
   group.var <- enquo(group_var)
   n_q <- rlang::sym(sprintf("n"))
   df <- dplyr::group_by(df, !!group.var)

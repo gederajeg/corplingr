@@ -4,15 +4,14 @@
 \alias{freqlist_leipzig_summarise}
 \title{Summarise wordlist count across corpus}
 \usage{
-freqlist_leipzig_summarise(df, group_var = "variable to group by",
-  descending = TRUE)
+freqlist_leipzig_summarise(df, group_var = NULL, descending = TRUE)
 }
 \arguments{
 \item{df}{a tibble data frame containing wordlist derived via the \code{\link{freqlist_leipzig_each}} or \code{\link{freqlist_leipzig_all}}.}
 
 \item{group_var}{a bare (i.e. unquoted) variable name to group by.}
 
-\item{descending}{whether the list is ordered increasingly and vice versa according to the token frequency.}
+\item{descending}{whether the data is ordered in decreasing order according to the token frequency (\code{TRUE} -- the default) or in ascending order (\code{FALSE}).}
 }
 \value{
 a tibble

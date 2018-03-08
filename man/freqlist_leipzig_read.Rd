@@ -10,7 +10,8 @@ freqlist_leipzig_read(wlist_path = wordlist_corpus_path,
 \arguments{
 \item{wlist_path}{the file paths of the Leipzig wordlist files.}
 
-\item{file_pattern}{the regular expressions/ID labels for the wordlist files.}
+\item{file_pattern}{the regular expressions for the wordlist files if particular files are to be read. The default is \code{NULL}.
+When all available frequency list files want to be be read-in, leave this argument to \code{NULL} and set the \code{all} argument (cf. below) to \code{TRUE}.}
 
 \item{all}{whether to read all available wordlist files from all corpus (\code{TRUE}) or not (\code{FALSE} -- the default)}
 
@@ -20,5 +21,22 @@ freqlist_leipzig_read(wlist_path = wordlist_corpus_path,
 a tibble with three columns (i) \code{corpus_id} (i.e., the corpus file), (ii) \code{word} (i.e., word forms), and (iii) \code{n} (i.e., token frequency)
 }
 \description{
-The function generates a tibble of wordlist read from the Leipzig Corpora Word List files.
+The function generates a tibble of frequency list of words read from the Leipzig Corpora frequency list files.
+    When one downloads the zip file of a Leipzig corpus, the readily available frequency lists will have the "-words.txt" label.
+    For instance, for Indonesian, the filename looks like this: \code{"ind_newscrawl_2015_300K-words.txt"}.
+}
+\examples{
+\dontrun{
+# read in a file containing filepaths of all Leipzig Corpora frequency list files
+wordlist_path <- readr::read_lines(file = "~/Documents/Corpora/leipzig_wordlist_path.txt")
+
+# read in the web and wikipedia sections
+tb <- freqlist_leipzig_read(wordlist_corpus_path,
+                            file_pattern = "(web_2012|wikipedia_2016)",
+                            all = FALSE,
+                            lower_case = TRUE)
+
+ # subset only on word that consists of letters and hypen (to retrieve a reduplication, for instance)
+ dplyr::filter(tb, stringr::str_detect(word, "^([-a-z]+)$"))
+}
 }

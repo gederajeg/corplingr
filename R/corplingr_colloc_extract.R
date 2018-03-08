@@ -42,7 +42,7 @@ colloc_extract <- function(corpus_vector = "corpus vector",
                            gathered = FALSE,
                            case_insensitive = TRUE) {
   node_regex <- stringr::regex(pattern, ignore_case = case_insensitive)
-  line_match <- stringr::str_subset(corpus, node_regex)
+  line_match <- stringr::str_subset(corpus_vector, node_regex)
   if (window == "l") {
     #span_regex <- stringr::str_c(seq(span), collapse = ", ")
     colloc_regex <- stringr::str_c("\\b([a-zA-Z-]+\\s){", span, "}", sep = "")

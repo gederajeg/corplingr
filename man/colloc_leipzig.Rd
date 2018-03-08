@@ -30,13 +30,19 @@ colloc_leipzig(corpus = "path to leipzig corpus", pattern = "regex",
 \item{sent_output_name}{name of the file for the full sentence match containing the collocates}
 }
 \value{
-a list of two tibbles: (i) for collocates with sentence number of the match, window span information, and the corpus files, and (ii) full-sentences per match with sent number and corpus file
+a list of two tibbles: (i) for collocates with sentence number of the match, window span information, and the corpus files, and (ii) full-sentences per match with sentence number and corpus file
 }
 \description{
 The function produces tibble-output collocates for Leipzig Corpora files.
 }
 \examples{
 \dontrun{
+# get the corpus filepaths
+corpus_files_path <- c("my/path/to/leipzig_corpus_file_1M-sent_1.txt",
+                       "my/path/to/leipzig_corpus_file_300K-sent_2.txt",
+                       "my/path/to/leipzig_corpus_file_300K-sent_3.txt")
+
+# run the function
 colloc <- colloc_leipzig(corpus = corpus_files_path[2:3],
                               pattern = "\\\\bterelakkan\\\\b",
                               window = "b",
@@ -44,9 +50,10 @@ colloc <- colloc_leipzig(corpus = corpus_files_path[2:3],
                               save_results = FALSE,
                               tolower_colloc = TRUE)
 # Inspect outputs
-
+## This one outputs the collocates tibble
 colloc$collocates
 
+## This one outputs the sentence matches tibble
 colloc$sentence_matches
 }
 }

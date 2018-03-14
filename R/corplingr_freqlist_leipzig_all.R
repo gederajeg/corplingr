@@ -4,12 +4,13 @@
 #'     While users can input all filepath to all corpus files, for memory-efficiency, it is recommended that each file is processed in separate function-call.
 #'     If it is decided to process all corpus files, the functions output a List with as many elements as the number of the input filepath.
 #' @param split_regex user-defined regular expressions to tokenise the corpus.
-#' @param corpus_file_names full filepath to one or more of the Leipzig Corpus file(s).
-#' @param case_insensitive Logical; ignoring (\code{TRUE}) or maintaining (\code{FALSE}) the case when splitting the corpus into word token.
+#' @param leipzig_path full filepath to one or more of the Leipzig Corpus file(s).
+#' @param case_insensitive logical; ignoring (\code{TRUE}) or maintaining (\code{FALSE}) the case when splitting the corpus into word token.
 #' @return A tibble of frequency list in descending order of the frequency.
 #' @examples
 #' \dontrun{
-#' wlist_all <- freqlist_leipzig_all(corpus_file_names = corpus_files_path[1])
+#' wlist_all <- freqlist_leipzig_all(split_regex = "([^a-zA-Z0-9-]+|--)",
+#'                                   leipzig_path = leipzig_corpus_path[1])
 #' }
 #' @importFrom rlang sym
 #' @importFrom rlang :=
@@ -24,27 +25,27 @@
 #' @export
 
 freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
-                                 corpus_file_names = NULL,
+                                 leipzig_path = NULL,
                                  case_insensitive = TRUE) {
-  if (length(corpus_file_names) > 1) {
-    cat(paste("You chose to generate frequency list for all words across ", length(corpus_file_names), " corpus files!\n", sep = ""))
+  if (length(leipzig_path) > 1) {
+    cat(paste("You chose to generate frequency list for all words across ", length(leipzig_path), " corpus files!\n", sep = ""))
     choice <- utils::menu(choices = c("CONTINUE", "EXIT"),
                    title = "If you wish to continue, type-in '1' into the console (without the quote!); otherwise, type-in '2'.")
     if (choice == 1) {
-      freqlist_all <- vector(mode = "list", length = length(corpus_file_names))
-      names(freqlist_all) <- stringr::str_replace(basename(corpus_file_names), "-sentences\\..+$", "")
+      freqlist_all <- vector(mode = "list", length = length(leipzig_path))
+      names(freqlist_all) <- stringr::str_replace(basename(leipzig_path), "-sentences\\..+$", "")
     } else {
       messages <- "You decided to exit the operation!"
       return(print(messages))
     }
 
-  } else if (length(corpus_file_names) == 1) {
+  } else if (length(leipzig_path) == 1) {
     freqlist <- tibble::tibble()
   }
-  for (i in seq_along(corpus_file_names)) {
+  for (i in seq_along(leipzig_path)) {
     cat("Reading-in the corpus file...\n")
-    corpora <- readr::read_lines(file = corpus_file_names[i])
-    cat('"', basename(corpus_file_names[i]), '" ', "has been loaded!\n", sep = "")
+    corpora <- readr::read_lines(file = leipzig_path[i])
+    cat('"', basename(leipzig_path[i]), '" ', "has been loaded!\n", sep = "")
     cat('Tokenising the corpus into word-tokens...\n')
     wtoken <- stringr::str_split(corpora,
                                  stringr::regex(pattern = split_regex,
@@ -56,10 +57,10 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
     cat('Generating the frequency list...\n')
     freqlist <- tibble::tibble(!!word_q := wtoken)
     freqlist <- dplyr::count(freqlist, !!word_q, sort = TRUE)
-    if (length(corpus_file_names) == 1) {
+    if (length(leipzig_path) == 1) {
       return(freqlist)
       cat('Done!\n')
-    } else if (length(corpus_file_names) > 1) {
+    } else if (length(leipzig_path) > 1) {
       freqlist_all[i] <- list(freqlist)
       cat(paste("Done with corpus no. ", i, "!\n\n", sep = ""))
     }

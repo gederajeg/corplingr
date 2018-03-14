@@ -5,12 +5,13 @@
 \title{Check full sentence-citation for a pattern}
 \usage{
 freqlist_leipzig_citation(pattern = NULL,
-  corpus_file_names = corpus_files_path, case_insensitive = TRUE)
+  leipzig_path = "(full) filepath to Leipzig corpus files",
+  case_insensitive = TRUE)
 }
 \arguments{
 \item{pattern}{regular expressions/strings of the target words/patterns.}
 
-\item{corpus_file_names}{complete file path of the Leipzig corpora to search for full citation of the words/patterns of interest.}
+\item{leipzig_path}{complete file path of the Leipzig corpora to search for full citation of the words/patterns of interest.}
 
 \item{case_insensitive}{whether to search case-insensitive pattern (\code{TRUE} -- the default) or not (\code{FALSE}).}
 }

@@ -4,13 +4,13 @@
 \alias{corpus_size_leipzig}
 \title{Generate Leipzig corpus-size}
 \usage{
-corpus_size_leipzig(word_regex = "\\\\b(?i)([-a-zA-Z0-9]+)\\\\b",
-  corpus_file_names = corpus_files_path)
+corpus_size_leipzig(leipzig_path = "(full) filepath to Leipzig corpus files",
+  word_regex = "\\\\b(?i)([-a-zA-Z0-9]+)\\\\b")
 }
 \arguments{
-\item{word_regex}{regular expressions defining what "a word" is}
+\item{leipzig_path}{file path to the directory folder in which the Leipzig corpus files are stored}
 
-\item{corpus_file_names}{file path to the directory folder in which the Leipzig corpus files are stored}
+\item{word_regex}{regular expressions defining what "a word" is}
 }
 \value{
 tibble containing \code{corpus_id}, \code{size}, and \code{size_print} (for text-printing)

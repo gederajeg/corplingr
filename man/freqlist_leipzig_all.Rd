@@ -5,14 +5,14 @@
 \title{Frequency list of all words in a Leipzig Corpus file}
 \usage{
 freqlist_leipzig_all(split_regex = "([^a-zA-Z0-9-]+|--)",
-  corpus_file_names = NULL, case_insensitive = TRUE)
+  leipzig_path = NULL, case_insensitive = TRUE)
 }
 \arguments{
 \item{split_regex}{user-defined regular expressions to tokenise the corpus.}
 
-\item{corpus_file_names}{full filepath to one or more of the Leipzig Corpus file(s).}
+\item{leipzig_path}{full filepath to one or more of the Leipzig Corpus file(s).}
 
-\item{case_insensitive}{Logical; ignoring (\code{TRUE}) or maintaining (\code{FALSE}) the case when splitting the corpus into word token.}
+\item{case_insensitive}{logical; ignoring (\code{TRUE}) or maintaining (\code{FALSE}) the case when splitting the corpus into word token.}
 }
 \value{
 A tibble of frequency list in descending order of the frequency.
@@ -24,6 +24,7 @@ The function generates a frequency list of all word-tokens in a single Leipzig C
 }
 \examples{
 \dontrun{
-wlist_all <- freqlist_leipzig_all(corpus_file_names = corpus_files_path[1])
+wlist_all <- freqlist_leipzig_all(split_regex = "([^a-zA-Z0-9-]+|--)",
+                                  leipzig_path = leipzig_corpus_path[1])
 }
 }

@@ -4,7 +4,9 @@
 \alias{concord_others}
 \title{Simple concordance function}
 \usage{
-concord_others(corpus_vector, pattern, lower_case = TRUE,
+
+  concord_others(corpus_vector = "character vector of text loaded/read into console",
+  pattern = "regular expressions", to_lower_corpus = TRUE,
   case_insensitive = TRUE, context_char = 50)
 }
 \arguments{
@@ -12,7 +14,7 @@ concord_others(corpus_vector, pattern, lower_case = TRUE,
 
 \item{pattern}{regular expressions for the search pattern.}
 
-\item{lower_case}{whether to lower case the corpus (\code{TRUE} -- the default) first or leave it as is (\code{FALSE}).}
+\item{to_lower_corpus}{whether to lowercase the corpus (\code{TRUE} -- the default) first or leave it as is (\code{FALSE}).}
 
 \item{case_insensitive}{whether to ignore the case for the search \code{pattern} argument (\code{TRUE} -- the default) or not (\code{FALSE}).}
 
@@ -23,16 +25,18 @@ A tibble/data frame for the concordance match with \code{LEFT} and \code{RIGHT} 
 }
 \description{
 The function generates a tidy concordance for a search pattern in a (set of) corpus (files).
-    The function requires the corpus file(s) loaded and ready in the console as a vector of text with more than one line of texts/sentences. See \bold{Examples} below for details.
+    The function requires the corpus file(s) loaded and ready in the console as a vector of text with more than one line of texts/sentences. Each line should not correspond to one sentence. See \bold{Examples} below for details.
 }
 \examples{
 \dontrun{
 # Load or read in the corpus data
-my.corpus.data <- "/Your/Path/To/Corpus.RData"
-load(my.corpus.data)
+# "load" approach
+my_corpus_data <- "/Your/Path/To/Corpus.RData"
+load(my_corpus_data)
 
-my.corpus.file.path <- "/Your/Path/To/Corpus.txt"
-corp <- readr::read_lines(my.corpus.file.path)
+# "read" approach
+my_corpus_path <- "/Your/Path/To/Corpus.txt"
+corp <- readr::read_lines(my_corpus_path)
 
 # Inspect the first two elements.
 head(corp, 2)
@@ -54,7 +58,7 @@ corp <- stringr::str_replace_all(corp, "\\\\s{2,}", " ")
 # get concordance for a pattern
 concordance <- concord_others(corpus_vector = corp,
                                    pattern = "\\\\bmemandang\\\\b",
-                                   lower_case = TRUE,
+                                   to_lower_corpus = TRUE,
                                    case_insensitive = TRUE,
                                    context_char = 100)
 

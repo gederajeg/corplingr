@@ -1,7 +1,7 @@
 Package: corplingr
 Type: Package
 Title: Tidy Concordances, Collocates, and Wordlist
-Version: 0.1.0
+Version: 1.0
 Author: Gede Primahadi Wijaya Rajeg (Gede Primahadi Wijaya Rajeg)
 Maintainer: Gede Primahadi Wijaya Rajeg <primahadiwijaya@gmail.com>
 Description: Generates concordances, collocates, and wordlist following the
@@ -15,7 +15,8 @@ Imports:
   stringr,
   readr,
   tibble,
-  rlang
+  rlang,
+  stringi
 License: GPL-2
 Encoding: UTF-8
 LazyData: true

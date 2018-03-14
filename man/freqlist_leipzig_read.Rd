@@ -4,11 +4,11 @@
 \alias{freqlist_leipzig_read}
 \title{Read in the wordlist files of the Leipzig Corpora}
 \usage{
-freqlist_leipzig_read(wlist_path = wordlist_corpus_path,
+freqlist_leipzig_read(leipzig_wlist_path = leipzig_wordlist_path,
   file_pattern = NULL, all = FALSE, lower_case = TRUE)
 }
 \arguments{
-\item{wlist_path}{the file paths of the Leipzig wordlist files.}
+\item{leipzig_wlist_path}{the file paths of the Leipzig wordlist files.}
 
 \item{file_pattern}{the regular expressions for the wordlist files if particular files are to be read. The default is \code{NULL}.
 When all available frequency list files want to be be read-in, leave this argument to \code{NULL} and set the \code{all} argument (cf. below) to \code{TRUE}.}
@@ -31,12 +31,13 @@ The function generates a tibble of frequency list of words read from the Leipzig
 wordlist_path <- readr::read_lines(file = "~/Documents/Corpora/leipzig_wordlist_path.txt")
 
 # read in the web and wikipedia sections
-tb <- freqlist_leipzig_read(wordlist_corpus_path,
+tb <- freqlist_leipzig_read(leipzig_wordlist_path,
                             file_pattern = "(web_2012|wikipedia_2016)",
                             all = FALSE,
                             lower_case = TRUE)
 
- # subset only on word that consists of letters and hypen (to retrieve a reduplication, for instance)
+ # subset only on word that consists of letters and hypen
+ # to retrieve/maintain reduplication (e.g., "anak-anak" 'children')
  dplyr::filter(tb, stringr::str_detect(word, "^([-a-z]+)$"))
 }
 }

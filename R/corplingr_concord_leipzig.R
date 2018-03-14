@@ -1,10 +1,10 @@
 #' Generate tidyverse-style concordances for the Leipzig Corpora
 #'
 #' @description The function produces tibble-output concordances for Leipzig Corpora files.
+#' @param leipzig_path character stringrs of (i) file names of the Leipzig corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.
 #' @param pattern regular expressions/exact patterns for the target pattern.
-#' @param corpus_file_names (i) file names of the corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.
 #' @param case_insensitive whether the search ignores case (TRUE -- the default) or not (FALSE).
-#' @return A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view; (iv) and full \code{sentences} of the matches, with the \code{pattern} being replaced with "nodeword".
+#' @return A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view.
 #' @importFrom purrr map
 #' @importFrom purrr map_df
 #' @importFrom purrr pmap
@@ -12,6 +12,8 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr mutate
 #' @importFrom dplyr filter
+#' @importFrom dplyr quo
+#' @importFrom dplyr quo_name
 #' @importFrom stringr str_which
 #' @importFrom stringr str_length
 #' @importFrom stringr str_locate_all
@@ -30,19 +32,19 @@
 #' library(corplingr)
 #'
 #' # 1. Generate concordance of a pattern from multiple corpus files
-#' corpus_files_path <- c("/Your/Path/to/Leipzig/corpora_1.txt",
+#' leipzig_corpus_path <- c("/Your/Path/to/Leipzig/corpora_1.txt",
 #' "/Your/Path/to/Leipzig/corpora_2.txt")
 #'
-#' concord <- concord_leipzig(pattern = "menjalani", corpus_file_names = corpus_files_path)
+#' concord <- concord_leipzig(leipzig_path = leipzig_corpus_path, pattern = "menjalani")
 #' str(concord)
 #'
 #'
 #' # 2. Combine with pipe "%>%" and other tidyverse suits!
 #'
-#' concord_leipzig("menjalani", corpus_files_path) %>%
+#' concord_leipzig(leipzig_corpus_path, "menjalani") %>%
 #'
 #' # retain only the concordance, corpus name and sentence id
-#' select(-start, -end, -node_sentences) %>%
+#' select(-start, -end) %>%
 #'
 #' write_delim(path = "my_concordance.txt", delim = "\t")
 #' }
@@ -50,27 +52,27 @@
 
 
 
-concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insensitive = TRUE) {
+concord_leipzig <- function(leipzig_path = "file path to leipzig corpora", pattern = "regular expressions", case_insensitive = TRUE) {
 
   # a tibble-dataframe for storing output from all corpus files
   full_concordance <- tibble()
 
-  for (i in seq_along(corpus_file_names)) {
+  for (i in seq_along(leipzig_path)) {
 
     # read in the corpus text
-    #if (any(str_detect(corpus_file_names, "corpus_sent_vector")) == TRUE) {
+    #if (any(str_detect(leipzig_path, "corpus_sent_vector")) == TRUE) {
      # cat("Using cleaned vector corpus!\n")
-      #load(corpus_file_names[i])
+      #load(leipzig_path[i])
       #corpora <- sentence_cleaned#; rm(corpus.sent.size, corpus.total.size)
-      #corpus_id <- str_replace(str_replace(basename(corpus_file_names[i]), "corpus.+?__(?=ind)", ""),
+      #corpus_id <- str_replace(str_replace(basename(leipzig_path[i]), "corpus.+?__(?=ind)", ""),
       #                         "\\.RData", "")
       #cat('"', corpus_id, '" ', "has been loaded!\n", sep = "")
     #} else {
-      corpora <- read_lines(file = corpus_file_names[i])
-      cat('"', basename(corpus_file_names[i]), '" ', "has been loaded!\n", sep = "")
+      corpora <- read_lines(file = leipzig_path[i])
+      cat('"', basename(leipzig_path[i]), '" ', "has been loaded!\n", sep = "")
 
       # retrieve the corpus names
-      corpus_id <- basename(corpus_file_names[i])
+      corpus_id <- basename(leipzig_path[i])
       corpus_id <- stringr::str_replace(corpus_id, '-sentences.*$', '')
     #}
 
@@ -82,6 +84,9 @@ concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insen
       match_id <- stringr::str_which(corpora, stringr::regex(pattern[r], ignore_case = case_insensitive))
       sub_corpus <- corpora[match_id]
 
+      # remove sentence number at the beginning of the line
+      sub_corpus <- stringr::str_replace(sub_corpus, "^\\d+?\\s", "")
+
       # store the sentence number in which the match is found
       sent_id <- match_id
 
@@ -89,10 +94,11 @@ concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insen
       if (length(sub_corpus) == 0) {
 
         cat("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus!\n\n")
+        next
 
       } else {
 
-        cat("At least one match for the search pattern is detected in the corpus!\n")
+        cat("At least one match for the search pattern is detected in the corpus!\n\n")
         match_length <- stringr::str_count(sub_corpus,
                                            stringr::regex(pattern[r],
                                                           ignore_case = case_insensitive)) # get the number of matches of the search word found in the corpus
@@ -110,6 +116,7 @@ concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insen
 
         left <- rlang::sym(sprintf("left"))
         right <- rlang::sym(sprintf("right"))
+        node_sent_quo <- rlang::sym(sprintf("node_sentences"))
         # generate a concordance table
         concordance <- position_tidy %>%
           mutate(corpus = corpus_id,
@@ -120,8 +127,8 @@ concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insen
                  node = stringr::str_trim(stringr::str_sub(!!sent_quo, start = start, end = end)),
                  !!right := stringr::str_trim(stringr::str_sub(!!sent_quo, start = end+1, end = stringr::str_length(!!sent_quo))),
                  !!right := replace(!!right, nchar(!!right)<=0, "~"),
-                 node_sentences = stringr::`str_sub<-`(!!sent_quo, start = start, end = end, value = "nodeword")) %>%
-          select(-!!sent_quo)
+                 !!node_sent_quo := stringr::`str_sub<-`(!!sent_quo, start = start, end = end, value = "nodeword")) %>%
+          select(-!!sent_quo, -!!node_sent_quo)
 
         full_concordance <- bind_rows(full_concordance, concordance)
 
@@ -130,7 +137,11 @@ concord_leipzig <- function(pattern = NULL, corpus_file_names = NULL, case_insen
     }
   }
   cat("Done!\n")
-  return(full_concordance)
+  if (dim(full_concordance)[1] == 0) {
+    message("No match found at all!")
+  } else {
+    return(full_concordance)
+  }
 }
 
 

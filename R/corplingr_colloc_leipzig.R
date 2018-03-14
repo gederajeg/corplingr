@@ -1,15 +1,18 @@
 #' Generate tidyverse-style window-span collocates for the Leipzig Corpora
 #'
 #' @description The function produces tibble-output collocates for Leipzig Corpora files.
-#' @param corpus (i) file names of the corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig corpus files
-#' @param pattern regular expressions/exact patterns for the target pattern
-#' @param window window-span direction of the collocates: \code{"r"} ('right of the node'), \code{"l"} ('left of the node'), or the DEFAULT is \code{"b"} ('both window')
-#' @param span numeric vector indicating the span of the collocate scope
-#' @param case_insensitive whether the search ignores case (TRUE -- the default) or not (FALSE)
-#' @param tolower_colloc whether to lower case the retrieved collocates and the nodes (TRUE -- default) or not (FALSE)
-#' @param save_results whether to output the collocates into a tab-separated plain text (TRUE) or not (FALSE -- default)
-#' @param coll_output_name name of the file for the collocate tables
-#' @param sent_output_name name of the file for the full sentence match containing the collocates
+#' @param leipzig_path character strings of (i) file names of the Leipzig corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig corpus files.
+#' @param leipzig_corpus_list specify this argument if each Leipzig corpus file has been loaded as R object and acts as an element of a list.
+#'     Example of this type of data-input can be seen in \code{data("demo_corpus_leipzig")}.
+#'     So specify either \code{leipzig_path} OR \code{leipzig_corpus_list} and set one of them to \code{NULL}.
+#' @param pattern regular expressions/exact patterns for the target pattern.
+#' @param window window-span direction of the collocates: \code{"r"} ('\bold{right} of the node'), \code{"l"} ('\bold{left} of the node'), or the DEFAULT is \code{"b"} ('both \bold{left} and \bold{right} context-window').
+#' @param span integer vector indicating the span of the collocate scope.
+#' @param case_insensitive whether the search pattern ignores case (TRUE -- the default) or not (FALSE).
+#' @param to_lower_colloc whether to lowercase the retrieved collocates and the nodes (TRUE -- default) or not (FALSE).
+#' @param save_results whether to output the collocates into a tab-separated plain text (TRUE) or not (FALSE -- default).
+#' @param coll_output_name name of the file for the collocate tables.
+#' @param sent_output_name name of the file for the full sentence match containing the collocates.
 #' @return a list of two tibbles: (i) for collocates with sentence number of the match, window span information, and the corpus files, and (ii) full-sentences per match with sentence number and corpus file
 #' @importFrom dplyr progress_estimated
 #' @importFrom dplyr bind_rows
@@ -46,17 +49,18 @@
 #' @examples
 #' \dontrun{
 #' # get the corpus filepaths
-#' corpus_files_path <- c("my/path/to/leipzig_corpus_file_1M-sent_1.txt",
+#' # so this example use the filepath input rather than list of corpus
+#' leipzig_corpus_path <- c("my/path/to/leipzig_corpus_file_1M-sent_1.txt",
 #'                        "my/path/to/leipzig_corpus_file_300K-sent_2.txt",
 #'                        "my/path/to/leipzig_corpus_file_300K-sent_3.txt")
 #'
 #' # run the function
-#' colloc <- colloc_leipzig(corpus = corpus_files_path[2:3],
+#' colloc <- colloc_leipzig(leipzig_path = leipzig_corpus_path[2:3],
 #'                               pattern = "\\bterelakkan\\b",
 #'                               window = "b",
 #'                               span = 3,
 #'                               save_results = FALSE,
-#'                               tolower_colloc = TRUE)
+#'                               to_lower_colloc = TRUE)
 #' # Inspect outputs
 #' ## This one outputs the collocates tibble
 #' colloc$collocates
@@ -67,59 +71,84 @@
 #' @export
 
 
-#corpus = corpus_files_path[2]
+#leipzig_path = leipzig_corpus_path[2]
 #pattern = "\\bmembeli\\b"
 #window = "b"
 #span = 4
 #case_insensitive = TRUE
-#tolower_colloc = TRUE
+#to_lower_colloc = TRUE
 #save_results = FALSE
 #c = 1
 #r = 1
 #s = 1
 
 
-colloc_leipzig <- function(corpus = "path to leipzig corpus",
-                                    pattern = "regex",
-                                    window = "b",
-                                    span = 2,
-                                    case_insensitive = TRUE,
-                                    tolower_colloc = TRUE,
-                                    save_results = FALSE,
-                                    coll_output_name = "colloc_tidy_colloc_out.txt",
-                                    sent_output_name = "colloc_tidy_sent_out.txt") {
+colloc_leipzig <- function(leipzig_path = NULL,
+                           leipzig_corpus_list = NULL,
+                           pattern = "regular expressions",
+                           window = "b",
+                           span = 2,
+                           case_insensitive = TRUE,
+                           to_lower_colloc = TRUE,
+                           save_results = FALSE,
+                           coll_output_name = "colloc_tidy_colloc_out.txt",
+                           sent_output_name = "colloc_tidy_sent_out.txt") {
+
+  # check the specified argument for the corpus input
+  if (purrr::is_null(leipzig_path) & !purrr::is_null(leipzig_corpus_list)) {
+
+    # corpus input as a list of text
+    corpus_input <- leipzig_corpus_list
+
+    # get the corpus names
+    corpus_names <- names(leipzig_corpus_list)
+
+    if (purrr::is_null(corpus_names)) {
+      corpus_names <- stringr::str_c("corpus_list_element_",
+                                     seq_along(leipzig_corpus_list), sep = "")
+    }
+
+  } else if (!purrr::is_null(leipzig_path) & purrr::is_null(leipzig_corpus_list)) {
+
+    # corpus input as filepath
+    corpus_input <- leipzig_path
+
+    # corpus names
+    corpus_names <- stringr::str_replace(basename(corpus_input), '-sentences.*$', '')
+  } # end of the check corpus input type
+
 
   # preparing the window span
-  if (window == "l") {
-    span1 <- span
-    span <- -span:0
-    names(span) <- c(stringr::str_c("l", span1:1, sep = ""), "node")
-  } else if (window == "r") {
-    span1 <- span
-    span <- 0:span
-    names(span) <- c("node", stringr::str_c("r", 1:span1))
-  } else {
-    span1 <- span
-    span <- -span:span
-    names(span) <- c(stringr::str_c("l", span1:1, sep = ""), "node", stringr::str_c("r", 1:span1, sep = ""))
-  }
+  span <- corplingr::span_set(window = window, span = span)
+  corp_q <- rlang::sym(sprintf("corpus"))
 
-  colloc_all <- tibble::tibble()
-  sentmatch_all <- tibble::tibble()
-  for (c in seq_along(corpus)) {
-    # read in the corpus text
-    corpora <- readr::read_lines(file = corpus[c])
-    cat('"', basename(corpus[c]), '" ', "has been loaded!\n", sep = "")
+  # output storage
+  colloc_all <- vector(mode = "list", length = length(corpus_input))
+  sent_match_all <- vector(mode = "list", length = length(corpus_input))
+  #colloc_all <- tibble::tibble()
+  #sent_match_all <- tibble::tibble()
+
+  for (c in seq_along(corpus_input)) {
+
+    if (typeof(corpus_input) == "character") {
+      # read in the corpus text if it is a filepath
+      corpora <- readr::read_lines(file = corpus_input[c])
+      cat('"', basename(corpus_input[c]), '" ', "has been loaded!\n", sep = "")
+    } else if (typeof(corpus_input) == "list") {
+      corpora <- corpus_input[[c]]
+      cat('Processing "', corpus_names[c], '"...\n', sep = "")
+    }
 
     for (r in seq_along(pattern)) {
       # detect the search pattern and retrieve the citation with the match
       match_id <- stringr::str_which(corpora, stringr::regex(pattern[r], ignore_case = case_insensitive))
-      subcorpus <- corpora[match_id]
+      sub_corpus <- corpora[match_id]
 
       # detect if any matches found
-      if (length(subcorpus) == 0) {
+      if (length(sub_corpus) == 0) {
 
-        cat("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus!\n\n")
+        cat("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus file!\n\n")
+        next
 
       } else {
 
@@ -130,34 +159,36 @@ colloc_leipzig <- function(corpus = "path to leipzig corpus",
         sent_id <- match_id
 
         # delete sentence number and put spaces around non-white-space characters
-        subcorpus <- stringr::str_replace_all(subcorpus, "^(\\d+?\\s)", "")
-        subcorpus <- stringr::str_replace_all(subcorpus, "(--)", " ")
-        subcorpus <- stringr::str_replace_all(subcorpus, "([^a-zA-Z0-9-\\s]+)", " \\1 ")
-        subcorpus <- stringr::str_replace_all(subcorpus, "\\s+", " ")
-        subcorpus <- stringr::str_trim(subcorpus, side = "both")
+        sub_corpus <- stringr::str_replace_all(sub_corpus, "^(\\d+?\\s)", "")
+        sub_corpus <- stringr::str_replace_all(sub_corpus, "(--)", " ")
+        sub_corpus <- stringr::str_replace_all(sub_corpus, "([^a-zA-Z0-9-\\s]+)", " \\1 ")
+        sub_corpus <- stringr::str_replace_all(sub_corpus, "\\s+", " ")
+        sub_corpus <- stringr::str_trim(sub_corpus, side = "both")
 
         # retrieve the corpus names
-        corpus_name <- stringr::str_replace(basename(corpus[c]), '-sentences.*$', '')
+        corpus_name <- corpus_names[c]
 
         # get the number of matches of the search word found in the corpus
-        match_length <- stringr::str_count(subcorpus, stringr::regex(pattern[r], ignore_case = case_insensitive))
+        match_length <- stringr::str_count(sub_corpus, stringr::regex(pattern[r], ignore_case = case_insensitive))
 
         # replicate the sentences/string based on the number of matches found in the string
-        sent_with_match <- rep(subcorpus, match_length)
+        sent_with_match <- rep(sub_corpus, match_length)
 
         # replicate the sentence numbers/IDs based on the number of matches found in the string
         sent_id <- rep(sent_id, match_length)
 
         # get the starting and end position of the pattern
         # and store as a tibble
-        position <- stringr::str_locate_all(subcorpus, stringr::regex(pattern[r], ignore_case = case_insensitive))
+        position <- stringr::str_locate_all(sub_corpus, stringr::regex(pattern[r], ignore_case = case_insensitive))
         position <- purrr::map(position, tibble::as_tibble)
         position <- purrr::map_df(position, dplyr::bind_rows)
 
         ## RETRIEVE THE COLLOCATES
-        all_colloc <- tibble()
-        all_sentmatches <- tibble()
-        p <- progress_estimated(n = length(sent_with_match))
+        all_colloc <- vector(mode = "list", length = length(sent_with_match))
+        all_sent_match <- vector(mode = "list", length = length(sent_with_match))
+        #all_colloc <- tibble()
+        #all_sent_match <- tibble()
+        p <- dplyr::progress_estimated(n = length(sent_with_match))
         for (s in seq_along(sent_with_match)) {
 
           if (position[s,1]==1) {
@@ -202,49 +233,52 @@ colloc_leipzig <- function(corpus = "path to leipzig corpus",
                                    w_vector_pos,
                                    sent_match)
 
-          if (tolower_colloc == TRUE) {
+          if (to_lower_colloc == TRUE) {
             colloc <- dplyr::mutate(colloc,
-                                    !!quo_name(quo(w)) := stringr::str_to_lower(!!quo(w)))
+                                    !!dplyr::quo_name(dplyr::quo(w)) := stringr::str_to_lower(!!dplyr::quo(w)))
           } else {
             colloc <- colloc
           }
           rm(sent_match_tagged)
 
           # calculate the collocate position of each words in relation to the node word
-          colloc.vector.pos <- dplyr::select(colloc, -!!quo(sent_match))
-          colloc.vector.pos <- dplyr::filter(colloc, stringr::str_detect(!!quo(w), stringr::regex("nodeword", ignore_case = TRUE))) # get the vector position of the node
-          colloc.vector.pos <- colloc.vector.pos$w_vector_pos + span # get the span vector-position for the collocates
-          colloc.vector.pos <- colloc.vector.pos[colloc.vector.pos <= dim(colloc)[1] & colloc.vector.pos > 0]
+          colloc_vector_pos <- dplyr::select(colloc, -!!dplyr::quo(sent_match))
+          colloc_vector_pos <- dplyr::filter(colloc, stringr::str_detect(!!dplyr::quo(w), stringr::regex("nodeword", ignore_case = TRUE))) # get the vector position of the node
+          colloc_vector_pos <- colloc_vector_pos$w_vector_pos + span # get the span vector-position for the collocates
+          colloc_vector_pos <- colloc_vector_pos[colloc_vector_pos <= dim(colloc)[1] & colloc_vector_pos > 0]
 
-          if (all(names(colloc.vector.pos) == "node") == TRUE) {
+          if (all(names(colloc_vector_pos) == "node") == TRUE) {
             next
           } else {
             # retrive the collocates and left_join them with their span ID
-            w_span <- names(colloc.vector.pos)
-            w_vector_pos <- colloc.vector.pos
+            w_span <- names(colloc_vector_pos)
+            w_vector_pos <- colloc_vector_pos
             colloc_span_pos <- tibble::tibble(w_span, w_vector_pos)
             colloc <- dplyr::left_join(colloc, colloc_span_pos, by = "w_vector_pos")
-            colloc <- dplyr::filter(colloc, !is.na(!!quo(w_span)))
+            colloc <- dplyr::filter(colloc, !is.na(!!dplyr::quo(w_span)))
             colloc <- dplyr::mutate(colloc,
-                                    !!quo_name(quo(corpus)) := corpus_name,
-                                    !!quo_name(quo(w)) := stringr::str_replace(!!quo(w), "nodeword", node),
-                                    !!quo_name(quo(sent_num)) := sent_id[s])
+                                    !!corp_q := corpus_name,
+                                    !!dplyr::quo_name(dplyr::quo(w)) := stringr::str_replace(!!dplyr::quo(w), "nodeword", node),
+                                    !!dplyr::quo_name(dplyr::quo(sent_num)) := sent_id[s])
             colloc <- dplyr::select(colloc,
-                                    !!quo(w), !!quo(w_vector_pos), !!quo(w_span), !!quo(corpus), !!quo(sent_num), !!quo(sent_match))
+                                    !!dplyr::quo(w), !!dplyr::quo(w_vector_pos), !!dplyr::quo(w_span), !!corp_q, !!dplyr::quo(sent_num), !!dplyr::quo(sent_match))
 
             # create a separate dbase from the collocate list
-            corpus <- unique(colloc$corpus)
+            corpus_labs <- unique(colloc$corpus)
             sent_num <- unique(colloc$sent_num)
             sent_match <- sent_with_match[s]
-            counterfulltext <- tibble::tibble(corpus,
+            full_text_counter <- tibble::tibble(corpus_labs,
                                               sent_num,
                                               node,
                                               sent_match)
+            colnames(full_text_counter)[1] <- "corpus"
 
             # gather all collocates
-            all_colloc <- dplyr::bind_rows(all_colloc, colloc)
+            all_colloc[[s]] <- colloc
+            #all_colloc <- dplyr::bind_rows(all_colloc, colloc)
             rm(colloc)
-            all_sentmatches <- dplyr::bind_rows(all_sentmatches, counterfulltext)
+            all_sent_match[[s]] <- full_text_counter
+            #all_sent_match <- dplyr::bind_rows(all_sent_match, full_text_counter)
             p$pause(0.05)$tick()$print()
             if (s == length(sent_with_match)) {
               cat("\nDone gathering the collocates for each sentence!\n\n")
@@ -252,18 +286,32 @@ colloc_leipzig <- function(corpus = "path to leipzig corpus",
           }
         } # end of "s" loop
       }
-      colloc_all <- dplyr::bind_rows(colloc_all, all_colloc)
-      sentmatch_all <- dplyr::bind_rows(sentmatch_all, all_sentmatches)
+      all_colloc <- dplyr::bind_rows(all_colloc)
+      all_sent_match <- dplyr::bind_rows(all_sent_match)
+      colloc_all[[c]] <- all_colloc
+      sent_match_all[[c]] <- all_sent_match
+
+      #colloc_all <- dplyr::bind_rows(colloc_all, all_colloc)
+      #sent_match_all <- dplyr::bind_rows(sent_match_all, all_sent_match)
     } # end of "r" loop
   } # end of "c" loop
-  if (save_results == TRUE) {
-    readr::write_delim(x = colloc_all, path = coll_output_name, delim = "\t", append = TRUE)
-    readr::write_delim(x = sentmatch_all, path = sent_output_name, delim="\t", append = TRUE)
-    cat("Collocates table and sentence match of the node have been saved!\n\n")
+
+  # gathering all output into one tibble by unlisting
+  colloc_all <- dplyr::bind_rows(colloc_all)
+  sent_match_all <- dplyr::bind_rows(sent_match_all)
+
+  if (dim(colloc_all)[1] == 0) {
+    message("No match is found at all!")
   } else {
-    out <- list(colloc_all, sentmatch_all)
-    names(out) <- c("collocates", "sentence_matches")
-    return(out)
+    if (save_results == TRUE) {
+      readr::write_delim(x = colloc_all, path = coll_output_name, delim = "\t", append = TRUE)
+      readr::write_delim(x = sent_match_all, path = sent_output_name, delim="\t", append = TRUE)
+      cat("Collocates table and sentence match of the node have been saved!\n\n")
+    } else {
+      out <- list(colloc_all, sent_match_all)
+      names(out) <- c("collocates", "sentence_matches")
+      return(out)
+    }
   }
 }
 

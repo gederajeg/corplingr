@@ -4,18 +4,18 @@
 \alias{concord_leipzig}
 \title{Generate tidyverse-style concordances for the Leipzig Corpora}
 \usage{
-concord_leipzig(pattern = NULL, corpus_file_names = NULL,
-  case_insensitive = TRUE)
+concord_leipzig(leipzig_path = "file path to leipzig corpora",
+  pattern = "regular expressions", case_insensitive = TRUE)
 }
 \arguments{
-\item{pattern}{regular expressions/exact patterns for the target pattern.}
+\item{leipzig_path}{character stringrs of (i) file names of the Leipzig corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.}
 
-\item{corpus_file_names}{(i) file names of the corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.}
+\item{pattern}{regular expressions/exact patterns for the target pattern.}
 
 \item{case_insensitive}{whether the search ignores case (TRUE -- the default) or not (FALSE).}
 }
 \value{
-A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view; (iv) and full \code{sentences} of the matches, with the \code{pattern} being replaced with "nodeword".
+A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view.
 }
 \description{
 The function produces tibble-output concordances for Leipzig Corpora files.
@@ -27,19 +27,19 @@ library(tidyverse)
 library(corplingr)
 
 # 1. Generate concordance of a pattern from multiple corpus files
-corpus_files_path <- c("/Your/Path/to/Leipzig/corpora_1.txt",
+leipzig_corpus_path <- c("/Your/Path/to/Leipzig/corpora_1.txt",
 "/Your/Path/to/Leipzig/corpora_2.txt")
 
-concord <- concord_leipzig(pattern = "menjalani", corpus_file_names = corpus_files_path)
+concord <- concord_leipzig(leipzig_path = leipzig_corpus_path, pattern = "menjalani")
 str(concord)
 
 
 # 2. Combine with pipe "\%>\%" and other tidyverse suits!
 
-concord_leipzig("menjalani", corpus_files_path) \%>\%
+concord_leipzig(leipzig_corpus_path, "menjalani") \%>\%
 
 # retain only the concordance, corpus name and sentence id
-select(-start, -end, -node_sentences) \%>\%
+select(-start, -end) \%>\%
 
 write_delim(path = "my_concordance.txt", delim = "\\t")
 }

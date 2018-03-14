@@ -3,7 +3,7 @@
 #' @description The function generates a tibble of token-count for a particular word(s)/regex(es) for each supplied Leipzig corpus file.
 #'
 #' @param pattern the regular expressions/exact patterns for the target pattern/word whose frequency in a (set of) Leipzig Corpus file(s) you want to generate.
-#' @param corpus_file_names gives the (i) file names of the corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig.
+#' @param leipzig_path gives the (i) file names of the corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig.
 #' @param case_insensitive logical; whether case differences should be ignored (\code{TRUE} -- the default) or not (\code{FALSE}).
 #' @return a tibble with three columns (i) \code{match}, (ii) \code{corpus_id}, and (iii) \code{n}, which is the count/token.
 #' @importFrom tibble tibble
@@ -20,24 +20,24 @@
 #' \dontrun{
 #' # prepare the input
 #' regex <- "\\bmemberi(kan)?\\b"
-#' corpus.path <- corpus_files_path[1:2]
+#' corpus.path <- leipzig_file_path[1:2]
 #'
 #' # generate the frequency count
 #' freqlist_leipzig_each(pattern = regex,
-#'                 corpus_file_names = corpus.path,
+#'                 leipzig_path = corpus.path,
 #'                 case_insensitive = TRUE)
 #' }
 #' @export
 
-freqlist_leipzig_each <- function(pattern = NULL, corpus_file_names = "corpus filepath", case_insensitive = TRUE) {
+freqlist_leipzig_each <- function(pattern = NULL, leipzig_path = "(full) filepath to a (set of) Leipzig corpus files", case_insensitive = TRUE) {
 
   # create an empty tibble to store the results
   regexp <- pattern
   wordlist_table <- tibble::tibble()
-  for (i in seq_along(corpus_file_names)) {
+  for (i in seq_along(leipzig_path)) {
 
-    corpora <- readr::read_lines(file = corpus_file_names[i])
-    cat('"', corpus_file_names[i], '" ', "has been loaded!\n", sep = "")
+    corpora <- readr::read_lines(file = leipzig_path[i])
+    cat('"', leipzig_path[i], '" ', "has been loaded!\n", sep = "")
 
     for (r in seq_along(regexp)) {
       # progress report
@@ -49,7 +49,7 @@ freqlist_leipzig_each <- function(pattern = NULL, corpus_file_names = "corpus fi
                                                        ignore_case = case_insensitive))
 
       # retrieve the corpus names
-      corpus_id <- basename(corpus_file_names[i])
+      corpus_id <- basename(leipzig_path[i])
       corpus_id <- stringr::str_replace(corpus_id, "-sentences.*$", "")
 
       # detect if any matches found

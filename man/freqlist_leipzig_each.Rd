@@ -4,13 +4,14 @@
 \alias{freqlist_leipzig_each}
 \title{Generate word-/regex-specific frequency list from the Leipzig Corpora}
 \usage{
-freqlist_leipzig_each(pattern = NULL, corpus_file_names = "corpus filepath",
+freqlist_leipzig_each(pattern = NULL,
+  leipzig_path = "(full) filepath to a (set of) Leipzig corpus files",
   case_insensitive = TRUE)
 }
 \arguments{
 \item{pattern}{the regular expressions/exact patterns for the target pattern/word whose frequency in a (set of) Leipzig Corpus file(s) you want to generate.}
 
-\item{corpus_file_names}{gives the (i) file names of the corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig.}
+\item{leipzig_path}{gives the (i) file names of the corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig.}
 
 \item{case_insensitive}{logical; whether case differences should be ignored (\code{TRUE} -- the default) or not (\code{FALSE}).}
 }
@@ -24,11 +25,11 @@ The function generates a tibble of token-count for a particular word(s)/regex(es
 \dontrun{
 # prepare the input
 regex <- "\\\\bmemberi(kan)?\\\\b"
-corpus.path <- corpus_files_path[1:2]
+corpus.path <- leipzig_file_path[1:2]
 
 # generate the frequency count
 freqlist_leipzig_each(pattern = regex,
-                corpus_file_names = corpus.path,
+                leipzig_path = corpus.path,
                 case_insensitive = TRUE)
 }
 }

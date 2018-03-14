@@ -2,15 +2,14 @@
 #
 #' @description function to get a total word-token count of a given leipzig corpus file.
 #'     It is built on top of \code{\link[stringr]{str_count}}.
+#' @param leipzig_path file path to the directory folder in which the Leipzig corpus files are stored
 #' @param word_regex regular expressions defining what "a word" is
-#' @param corpus_file_names file path to the directory folder in which the Leipzig corpus files are stored
 #' @return tibble containing \code{corpus_id}, \code{size}, and \code{size_print} (for text-printing)
-#' @export
 
-corpus_size_leipzig <- function(word_regex = "\\b(?i)([-a-zA-Z0-9]+)\\b", corpus_file_names = corpus_files_path) {
+corpus_size_leipzig <- function(leipzig_path = "(full) filepath to Leipzig corpus files", word_regex = "\\b(?i)([-a-zA-Z0-9]+)\\b") {
 
-  corpus_id <- stringr::str_replace_all(basename(corpus_file_names), "-sentences.txt", "")
-  corpus_path <- corpus_file_names
+  corpus_id <- stringr::str_replace_all(basename(leipzig_path), "-sentences.txt", "")
+  corpus_path <- leipzig_path
 
   size <- vector()
 

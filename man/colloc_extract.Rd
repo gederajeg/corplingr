@@ -31,7 +31,7 @@ The function produces window-span collocates in the following scheme: ...\\scoll
 \examples{
 \dontrun{
 # load a Leipzig corpus file
-corpus <- readr::read_lines(corpus_files_path[2])
+corpus <- readr::read_lines(leipzig_corpus_path[2])
 
 # search right-side collocates within two words from the node
 colloc <- colloc_extract(corpus_vector = corpus, pattern = "\\\\bmemberi\\\\b", window = "r", span = 2)

@@ -10,49 +10,54 @@ stopwords <- unique(c(stopwords1, stopwords2))
 leipzig_corpus_directory <- "/Users/Primahadi/Documents/Corpora/_corpusindo/Leipzig Corpora"
 leipzig_wordlist_directory <- "/Users/Primahadi/Documents/Corpora/_corpusindo/Leipzig Corpora/leipzig_wordlist"
 
+# orti_bali_corpus_path
+orti_bali_folder <- "/Users/Primahadi/Documents/Corpora/_corpusbali/Surat Kabar/Orti Bali/utf-8 version"
+orti_bali_path <- dir(path = orti_bali_folder, pattern = "\\.txt$", full.names = TRUE)
+
 # get the complete path to each file of the leipzig corpora
 # by indexing (in the "pattern" argument) the initials of the corpus files (i.e. "^ind(_|[-])")
-corpus_files <- dir(path = leipzig_corpus_directory,
+leipzig_corpus_name <- dir(path = leipzig_corpus_directory,
                    pattern = "^ind(_|[-])",
                    full.names = FALSE) # only the basename ("full.names=FALSE")
-names(corpus_files) <- 1:length(corpus_files)
+names(leipzig_corpus_name) <- 1:length(leipzig_corpus_name)
 
-corpus_files_path <- dir(path = leipzig_corpus_directory,
+leipzig_corpus_path <- dir(path = leipzig_corpus_directory,
                         pattern = "^ind(_|[-])",
                         full.names = TRUE) # full path ("full.names=TRUE")
-corpus_id <- stringr::str_replace(corpus_files, "-sentences.*$", "")
-names(corpus_id) <- 1:length(corpus_id)
+leipzig_corpus_id <- stringr::str_replace(leipzig_corpus_name, "-sentences.*$", "")
+names(leipzig_corpus_id) <- 1:length(leipzig_corpus_id)
 
-corpus_vector_path <- dir(path = leipzig_corpus_directory,
+leipzig_vector_path <- dir(path = leipzig_corpus_directory,
                           pattern = "^corpus_word_vector__",
                           full.names = TRUE)
-corpus_vector_id <- stringr::str_replace(basename(corpus_vector_path), "^corpus_.+?__", "")
+leipzig_vector_name <- stringr::str_replace(basename(leipzig_vector_path), "^corpus_.+?__", "")
 
-corpus_cleaned_path <- dir(path = leipzig_corpus_directory,
+leipzig_cleaned_path <- dir(path = leipzig_corpus_directory,
                            pattern = "^corpus_sent_vector__",
                            full.names = TRUE)
-corpus_cleaned_id <- stringr::str_replace(basename(corpus_cleaned_path), "^corpus_.+?__", "")
+leipzig_cleaned_name <- stringr::str_replace(basename(leipzig_cleaned_path), "^corpus_.+?__", "")
 
 # get the complete path to each file of the leipzig corpora wordlist
-wordlist_corpus_path <- dir(path = leipzig_wordlist_directory, full.names = TRUE)
-wordlist_corpus_id <- stringr::str_replace(basename(wordlist_corpus_path), "-words.*$", "")
-wordlist_df_path <- dir(path = leipzig_corpus_directory, pattern = "_wordlist__", full.names = TRUE)
-wordlist_df_id <- stringr::str_replace(basename(wordlist_df_path), "^corpus_.+?__(?=ind)", "")
+leipzig_wordlist_path <- dir(path = leipzig_wordlist_directory, full.names = TRUE)
+leipzig_wordlist_name <- stringr::str_replace(basename(leipzig_wordlist_path), "-words.*$", "")
+leipzig_mywordlist_path <- dir(path = leipzig_corpus_directory, pattern = "_wordlist__", full.names = TRUE)
+leipzig_mywordlist_name <- stringr::str_replace(basename(leipzig_mywordlist_path), "^corpus_.+?__(?=ind)", "")
 
 # generate internal data
-devtools::use_data(corpus_files,
-                   corpus_files_path,
-                   corpus_vector_path,
-                   corpus_vector_id,
-                   corpus_cleaned_path,
-                   corpus_cleaned_id,
-                   corpus_id,
-                   leipzig_corpus_directory,
-                   leipzig_wordlist_directory,
-                   wordlist_corpus_id,
-                   wordlist_corpus_path,
-                   wordlist_df_path,
-                   wordlist_df_id,
+devtools::use_data(leipzig_corpus_name,
+                   leipzig_corpus_path,
+                   orti_bali_path,
+                   leipzig_vector_path,
+                   leipzig_vector_name,
+                   leipzig_cleaned_path,
+                   leipzig_cleaned_name,
+                   #leipzig_corpus_id,
+                   #leipzig_corpus_directory,
+                   #leipzig_wordlist_directory,
+                   leipzig_wordlist_name,
+                   leipzig_wordlist_path,
+                   #leipzig_mywordlist_path,
+                   #leipzig_mywordlist_name,
                    stopwords,
                    stopwords1,
                    stopwords2,

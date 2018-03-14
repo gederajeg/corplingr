@@ -4,30 +4,34 @@
 \alias{colloc_leipzig}
 \title{Generate tidyverse-style window-span collocates for the Leipzig Corpora}
 \usage{
-colloc_leipzig(corpus = "path to leipzig corpus", pattern = "regex",
-  window = "b", span = 2, case_insensitive = TRUE,
-  tolower_colloc = TRUE, save_results = FALSE,
+colloc_leipzig(leipzig_path = NULL, leipzig_corpus_list = NULL,
+  pattern = "regular expressions", window = "b", span = 2,
+  case_insensitive = TRUE, to_lower_colloc = TRUE, save_results = FALSE,
   coll_output_name = "colloc_tidy_colloc_out.txt",
   sent_output_name = "colloc_tidy_sent_out.txt")
 }
 \arguments{
-\item{corpus}{(i) file names of the corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig corpus files}
+\item{leipzig_path}{character strings of (i) file names of the Leipzig corpus if they are in the working directory, or (ii) the complete file path to each of the Leipzig corpus files.}
 
-\item{pattern}{regular expressions/exact patterns for the target pattern}
+\item{leipzig_corpus_list}{specify this argument if each Leipzig corpus file has been loaded as R object and acts as an element of a list.
+Example of this type of data-input can be seen in \code{data("demo_corpus_leipzig")}.
+So specify either \code{leipzig_path} OR \code{leipzig_corpus_list} and set one of them to \code{NULL}.}
 
-\item{window}{window-span direction of the collocates: \code{"r"} ('right of the node'), \code{"l"} ('left of the node'), or the DEFAULT is \code{"b"} ('both window')}
+\item{pattern}{regular expressions/exact patterns for the target pattern.}
 
-\item{span}{numeric vector indicating the span of the collocate scope}
+\item{window}{window-span direction of the collocates: \code{"r"} ('\bold{right} of the node'), \code{"l"} ('\bold{left} of the node'), or the DEFAULT is \code{"b"} ('both \bold{left} and \bold{right} context-window').}
 
-\item{case_insensitive}{whether the search ignores case (TRUE -- the default) or not (FALSE)}
+\item{span}{integer vector indicating the span of the collocate scope.}
 
-\item{tolower_colloc}{whether to lower case the retrieved collocates and the nodes (TRUE -- default) or not (FALSE)}
+\item{case_insensitive}{whether the search pattern ignores case (TRUE -- the default) or not (FALSE).}
 
-\item{save_results}{whether to output the collocates into a tab-separated plain text (TRUE) or not (FALSE -- default)}
+\item{to_lower_colloc}{whether to lowercase the retrieved collocates and the nodes (TRUE -- default) or not (FALSE).}
 
-\item{coll_output_name}{name of the file for the collocate tables}
+\item{save_results}{whether to output the collocates into a tab-separated plain text (TRUE) or not (FALSE -- default).}
 
-\item{sent_output_name}{name of the file for the full sentence match containing the collocates}
+\item{coll_output_name}{name of the file for the collocate tables.}
+
+\item{sent_output_name}{name of the file for the full sentence match containing the collocates.}
 }
 \value{
 a list of two tibbles: (i) for collocates with sentence number of the match, window span information, and the corpus files, and (ii) full-sentences per match with sentence number and corpus file
@@ -38,17 +42,18 @@ The function produces tibble-output collocates for Leipzig Corpora files.
 \examples{
 \dontrun{
 # get the corpus filepaths
-corpus_files_path <- c("my/path/to/leipzig_corpus_file_1M-sent_1.txt",
+# so this example use the filepath input rather than list of corpus
+leipzig_corpus_path <- c("my/path/to/leipzig_corpus_file_1M-sent_1.txt",
                        "my/path/to/leipzig_corpus_file_300K-sent_2.txt",
                        "my/path/to/leipzig_corpus_file_300K-sent_3.txt")
 
 # run the function
-colloc <- colloc_leipzig(corpus = corpus_files_path[2:3],
+colloc <- colloc_leipzig(leipzig_path = leipzig_corpus_path[2:3],
                               pattern = "\\\\bterelakkan\\\\b",
                               window = "b",
                               span = 3,
                               save_results = FALSE,
-                              tolower_colloc = TRUE)
+                              to_lower_colloc = TRUE)
 # Inspect outputs
 ## This one outputs the collocates tibble
 colloc$collocates

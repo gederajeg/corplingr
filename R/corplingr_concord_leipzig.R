@@ -23,12 +23,12 @@
 #' @importFrom stringr str_sub
 #' @importFrom stringr str_trim
 #' @importFrom stringr str_sub<-
-#' @importFrom rlang sym
-#' @importFrom rlang :=
+#' @importFrom rlang .data
+#' @importFrom assertthat assert_that
+#' @importFrom assertthat not_empty
 #' @examples
 #' \dontrun{
 #' # load the required packages
-#' library(tidyverse)
 #' library(corplingr)
 #'
 #' # 1. Generate concordance of a pattern from multiple corpus files
@@ -40,7 +40,8 @@
 #'
 #'
 #' # 2. Combine with pipe "%>%" and other tidyverse suits!
-#'
+#' library(dplyr)
+#' library(readr)
 #' concord_leipzig(leipzig_corpus_path, "menjalani") %>%
 #'
 #' # retain only the concordance, corpus name and sentence id
@@ -52,7 +53,13 @@
 
 
 
-concord_leipzig <- function(leipzig_path = "file path to leipzig corpora", pattern = "regular expressions", case_insensitive = TRUE) {
+concord_leipzig <- function(leipzig_path = NULL,
+                            pattern = NULL,
+                            case_insensitive = TRUE) {
+
+  # check if the path and patterns are not null
+  assertthat::assert_that(assertthat::not_empty(leipzig_path))
+  assertthat::assert_that(assertthat::not_empty(pattern))
 
   # a tibble-dataframe for storing output from all corpus files
   full_concordance <- tibble()
@@ -108,27 +115,24 @@ concord_leipzig <- function(leipzig_path = "file path to leipzig corpora", patte
         position <- stringr::str_locate_all(sub_corpus,
                                             stringr::regex(pattern[r],
                                                            ignore_case = case_insensitive)) # get the starting and end position of the pattern
-        sent_quo <- rlang::sym(sprintf("sentences"))
+
         position_tidy <- position %>% # get all starting and end position into a tidy 'tibble'
           purrr::map(as_tibble) %>% # change the matrix in each position list into a tibble
           purrr::map_df(bind_rows) %>% # return the listed tibble into a single tibble
-          dplyr::mutate(!!sent_quo := sent_with_match) # add the matched sentences into the tibble of the starting and end position
+          dplyr::mutate(sentences = sent_with_match) # add the matched sentences into the tibble of the starting and end position
 
-        left <- rlang::sym(sprintf("left"))
-        right <- rlang::sym(sprintf("right"))
-        node_sent_quo <- rlang::sym(sprintf("node_sentences"))
-        # generate a concordance table
+        # prepare data for generating a concordance table
         concordance <- position_tidy %>%
           mutate(corpus = corpus_id,
                  sent_id = sent_id,
-                 !!left := stringr::str_sub(!!sent_quo, start = 1, end = start-1),
-                 !!left := stringr::str_trim(!!left),
-                 !!left := replace(!!left, nchar(!!left) <= 0, "~"),
-                 node = stringr::str_trim(stringr::str_sub(!!sent_quo, start = start, end = end)),
-                 !!right := stringr::str_trim(stringr::str_sub(!!sent_quo, start = end+1, end = stringr::str_length(!!sent_quo))),
-                 !!right := replace(!!right, nchar(!!right)<=0, "~"),
-                 !!node_sent_quo := stringr::`str_sub<-`(!!sent_quo, start = start, end = end, value = "nodeword")) %>%
-          select(-!!sent_quo, -!!node_sent_quo)
+                 left = stringr::str_sub(.data$sentences, start = 1, end = start - 1),
+                 left = stringr::str_trim(.data$left),
+                 left = replace(.data$left, nchar(.data$left) <= 0, "~"),
+                 node = stringr::str_trim(stringr::str_sub(.data$sentences, start = start, end = end)),
+                 right = stringr::str_trim(stringr::str_sub(.data$sentences, start = end + 1, end = stringr::str_length(.data$sentences))),
+                 right = replace(.data$right, nchar(.data$right) <= 0, "~"),
+                 node_sentences = stringr::`str_sub<-`(.data$sentences, start = start, end = end, value = "nodeword")) %>%
+          select(-.data$sentences, -.data$node_sentences)
 
         full_concordance <- bind_rows(full_concordance, concordance)
 

@@ -46,6 +46,7 @@
 #' @importFrom dplyr quo_name
 #' @importFrom dplyr quo
 #' @importFrom rlang :=
+#' @importFrom rlang .data
 #' @examples
 #' \dontrun{
 #' # get the corpus filepaths
@@ -85,7 +86,7 @@
 
 colloc_leipzig <- function(leipzig_path = NULL,
                            leipzig_corpus_list = NULL,
-                           pattern = "regular expressions",
+                           pattern = NULL,
                            window = "b",
                            span = 2,
                            case_insensitive = TRUE,

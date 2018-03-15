@@ -5,8 +5,8 @@
 \title{Generate tidyverse-style window-span collocates for the Leipzig Corpora}
 \usage{
 colloc_leipzig(leipzig_path = NULL, leipzig_corpus_list = NULL,
-  pattern = "regular expressions", window = "b", span = 2,
-  case_insensitive = TRUE, to_lower_colloc = TRUE, save_results = FALSE,
+  pattern = NULL, window = "b", span = 2, case_insensitive = TRUE,
+  to_lower_colloc = TRUE, save_results = FALSE,
   coll_output_name = "colloc_tidy_colloc_out.txt",
   sent_output_name = "colloc_tidy_sent_out.txt")
 }

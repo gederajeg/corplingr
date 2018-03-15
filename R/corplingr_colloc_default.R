@@ -22,12 +22,15 @@
 #' }
 #' @examples
 #' \dontrun{
-#' # do the collocate search
+#' # do the collocate search using "corpus_path" input-option
 #' df <- colloc_default(corpus_path = orti_bali_path,
 #'                      pattern = "^nuju$",
 #'                      window = "b", # focusing on both left and right context window
 #'                      span = 3) # retrieve 3 collocates to the left and right of the node
 #' }
+#' @importFrom rlang .data
+#' @importFrom purrr is_null
+#' @importFrom dplyr progress_estimated
 #é
 colloc_default <- function(corpus_path = NULL,
                            corpus_list = NULL,
@@ -105,18 +108,18 @@ colloc_default <- function(corpus_path = NULL,
     word_vector <- word_vector[nzchar(word_vector)]
 
     # store the word vector and original corpus as tibble data frame
-    word_vector_tb <- tibble::tibble(!!dplyr::quo_name(dplyr::quo(w)) := word_vector,
-                                     !!dplyr::quo_name(dplyr::quo(w_vector_pos)) := 1:length(word_vector),
-                                     !!dplyr::quo_name(dplyr::quo(sent_num)) := names(word_vector),
-                                     !!dplyr::quo_name(dplyr::quo(corpus_name)) := corpus_name)
+    word_vector_tb <- tibble::tibble(w = word_vector,
+                                     w_vector_pos = 1:length(word_vector),
+                                     sent_num = names(word_vector),
+                                     corpus_name = corpus_name)
     word_vector_tb <- dplyr::mutate(word_vector_tb,
-                                    !!dplyr::quo_name(dplyr::quo(sent_num)) := as.integer(stringr::str_replace_all(!!dplyr::quo(sent_num), "(_\\d+$|^sent_)", "")))
+                                    sent_num = as.integer(stringr::str_replace_all(.data$sent_num, "(_\\d+$|^sent_)", "")))
     corpus <- stringr::str_replace_all(corpus,
                                        pattern = stringr::regex("(ZSENTENCEZ|zsentencez)", ignore_case = case_insensitive),
                                        replacement = "")
     corpus <- stringr::str_trim(corpus)
-    corpus_tb <- tibble::tibble(!!dplyr::quo_name(dplyr::quo(sent_num)) := 1:length(corpus),
-                                !!dplyr::quo_name(dplyr::quo(sent_match)) := corpus)
+    corpus_tb <- tibble::tibble(sent_num = 1:length(corpus),
+                                sent_match = corpus)
 
     # get pattern/word vector position
     match_id <- stringr::str_which(string = word_vector, pattern = pattern_rgx)
@@ -134,17 +137,17 @@ colloc_default <- function(corpus_path = NULL,
       colloc_vector_pos <- unlist(colloc_vector_pos)
 
       # extract the collocates
-      colloc_pos_tb <- tibble::tibble(!!dplyr::quo_name(dplyr::quo(w_vector_pos)) := colloc_vector_pos,
-                                      !!dplyr::quo_name(dplyr::quo(w_span)) := names(colloc_vector_pos))
+      colloc_pos_tb <- tibble::tibble(w_vector_pos = colloc_vector_pos,
+                                      w_span = names(colloc_vector_pos))
       colloc_pos_tb <- colloc_pos_tb[!duplicated(colloc_pos_tb$w_vector_pos), ]
       colloc_temp_tb <- dplyr::left_join(colloc_pos_tb, word_vector_tb, by = "w_vector_pos")
       colloc_temp_tb <- dplyr::left_join(colloc_temp_tb, corpus_tb, by = "sent_num")
 
       # store all collocates and remove the "ZSENTENCEZ/zsentencez" collocates
-      all_colloc[[h]] <- dplyr::filter(colloc_temp_tb, !!dplyr::quo(!w %in% c("ZSENTENCEZ", "zsentencez")))
+      all_colloc[[h]] <- dplyr::filter(colloc_temp_tb, !.data$w %in% c("ZSENTENCEZ", "zsentencez"))
 
       # gather all words in the corpus
-      all_word_vectors[[h]] <- dplyr::filter(word_vector_tb, !!dplyr::quo(!w %in% c("ZSENTENCEZ", "zsentencez")))
+      all_word_vectors[[h]] <- dplyr::filter(word_vector_tb, !.data$w %in% c("ZSENTENCEZ", "zsentencez"))
     }
   }
   all_word_vectors <- dplyr::bind_rows(all_word_vectors)

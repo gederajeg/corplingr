@@ -46,7 +46,7 @@ Collocates retrieval for raw corpus text
 }
 \examples{
 \dontrun{
-# do the collocate search
+# do the collocate search using "corpus_path" input-option
 df <- colloc_default(corpus_path = orti_bali_path,
                      pattern = "^nuju$",
                      window = "b", # focusing on both left and right context window

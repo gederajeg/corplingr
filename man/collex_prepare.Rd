@@ -23,7 +23,7 @@ This function is designed to handle the output of \code{colloc_default} to gener
 \examples{
 \dontrun{
 # do the collocate search
-df <- colloc_default(corpus_path = orti_bali_path,
+df <- colloc_default(corpus_path = orti_bali_path[1:50],
                      pattern = "^nuju$",
                      window = "b", # focusing on both left and right context window
                      span = 3) # retrieve 3 collocates to the left and right of the node

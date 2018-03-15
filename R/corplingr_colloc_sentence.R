@@ -41,7 +41,6 @@
 #' # count the frequency of the collocates
 #' df %>% dplyr::count(w, sort = TRUE)
 #' }
-#' @export
 colloc_sentence <- function(corpus_path = "(full) filepath to sentence-based corpus",
                             leipzig_input = TRUE, # check if the sentence corpus is from leipzig corpora
                             pattern = "regular expressions",

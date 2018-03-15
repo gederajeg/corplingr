@@ -71,8 +71,13 @@
 #' @importFrom stringr str_trim
 #' @importFrom tibble as_tibble
 #' @importFrom tibble tibble
+#' @importFrom rlang .data
 #' @export
-concord_others <- function(corpus_vector = "character vector of text loaded/read into console", pattern = "regular expressions", to_lower_corpus = TRUE, case_insensitive = TRUE, context_char = 50) {
+concord_others <- function(corpus_vector = "character vector of text loaded/read into console",
+                           pattern = "regular expressions",
+                           to_lower_corpus = TRUE,
+                           case_insensitive = TRUE,
+                           context_char = 50) {
 
   # subset the line/text containing the potential match
   regexpr <- pattern
@@ -111,9 +116,9 @@ concord_others <- function(corpus_vector = "character vector of text loaded/read
     RIGHT <- replace(RIGHT, nchar(RIGHT) == 0, "~")
     concord_df <- tibble::tibble(LEFT, NODE, RIGHT)
     concord_df <- dplyr::mutate(concord_df,
-                                !!quo_name(quo(LEFT)) := stringr::str_trim(!!quo(LEFT)),
-                                !!quo_name(quo(NODE)) := stringr::str_trim(!!quo(NODE)),
-                                !!quo_name(quo(RIGHT)) := stringr::str_trim(!!quo(RIGHT)))
+                                LEFT = stringr::str_trim(.data$LEFT),
+                                NODE = stringr::str_trim(.data$NODE),
+                                RIGHT = stringr::str_trim(.data$RIGHT))
     cat("Done!\n")
     return(concord_df)
   } else {

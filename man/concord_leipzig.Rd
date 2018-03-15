@@ -4,8 +4,8 @@
 \alias{concord_leipzig}
 \title{Generate tidyverse-style concordances for the Leipzig Corpora}
 \usage{
-concord_leipzig(leipzig_path = "file path to leipzig corpora",
-  pattern = "regular expressions", case_insensitive = TRUE)
+concord_leipzig(leipzig_path = NULL, pattern = NULL,
+  case_insensitive = TRUE)
 }
 \arguments{
 \item{leipzig_path}{character stringrs of (i) file names of the Leipzig corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.}
@@ -23,7 +23,6 @@ The function produces tibble-output concordances for Leipzig Corpora files.
 \examples{
 \dontrun{
 # load the required packages
-library(tidyverse)
 library(corplingr)
 
 # 1. Generate concordance of a pattern from multiple corpus files
@@ -35,7 +34,8 @@ str(concord)
 
 
 # 2. Combine with pipe "\%>\%" and other tidyverse suits!
-
+library(dplyr)
+library(readr)
 concord_leipzig(leipzig_corpus_path, "menjalani") \%>\%
 
 # retain only the concordance, corpus name and sentence id

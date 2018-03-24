@@ -1,6 +1,7 @@
 #' Prepare Leipzig collocates data for collexemes/collocates analysis
 #'
-#' @description This function is designed to handle the output of \code{\link{colloc_leipzig}} to generate a tidy data frame required as input of \code{\link{collex_fye}}. The latter is used to compute collexeme/collocate analysis using one-tailed \emph{Fisher-Yates Exact} test.
+#' @description This function is designed to handle the output of \code{\link{colloc_leipzig}} to generate a tidy data frame required as input of \code{\link{collex_fye}}.
+#'     The latter is used to compute collexeme/collocate strength using one-tailed \emph{Fisher-Yates Exact} test.
 #' @param list_output The list output of \code{\link{colloc_leipzig}}.
 #' @param leipzig_wordlist_path Full path to the wordlist table for each Leipzig Corpus File
 #' @param node_pattern Regex patterns of the node word specified in \code{\link{colloc_leipzig}}.
@@ -13,11 +14,11 @@
 #' # retrieve collocates for a given word
 #' rgx <- "\\bmengakhir\\b"
 #' coll_df <- colloc_leipzig(leipzig_path = leipzig_corpus_path,
-#'                        pattern = rgx,
-#'                          window = "r",
-#'                          span = 4,
-#'                          save_results = FALSE,
-#'                          to_lower_colloc = TRUE)
+#'                           pattern = rgx,
+#'                           window = "r",
+#'                           span = 4,
+#'                           save_results = FALSE,
+#'                           to_lower_colloc = TRUE)
 #'
 #' # get only the collocates output
 #' list_output <- coll_df$collocates
@@ -25,9 +26,9 @@
 #' # collstr analysis for collocates from Leipzig Corpora
 #' ### prepare input table for coll.analysis ### <--- HERE IS THE CALL FOR collex_prepare_leipzig()
 #' collex_tb <-collex_prepare_leipzig(list_output = coll_df,
-#'                                 leipzig_wordlist_path = leipzig_mywordlist_path,
-#'                                 node_pattern = rgx,
-#'                                 span = c("r1"))
+#'                                    leipzig_wordlist_path = leipzig_mywordlist_path,
+#'                                    node_pattern = rgx,
+#'                                    span = c("r1"))
 #' # remove any NA row data
 #' collex_tb <- dplyr::filter_all(collex_tb,
 #'                               dplyr::all_vars(!is.na(.)))
@@ -42,12 +43,22 @@
 #' # sort in decreasing order by collostruction strength
 #' dplyr::arrange(collex_tb, dplyr::desc(collstr))
 #' }
-#' @import dplyr
 #' @importFrom readr read_tsv
 #' @importFrom purrr is_null
 #' @importFrom stringr str_extract
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_which
+#' @importFrom dplyr filter
+#' @importFrom dplyr group_by
+#' @importFrom dplyr distinct
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr count
+#' @importFrom dplyr rename
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr summarise
+#' @importFrom dplyr tally
+#' @importFrom dplyr pull
+#' @importFrom dplyr left_join
 #' @export
 
 collex_prepare_leipzig <- function(list_output = NULL,
@@ -93,7 +104,6 @@ collex_prepare_leipzig <- function(list_output = NULL,
   collex_tb$corpus_size <- corpus_size
   collex_tb$n_pattern <- n_pattern
   return(collex_tb)
-
 }
 
 

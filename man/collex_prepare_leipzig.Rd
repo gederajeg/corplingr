@@ -22,18 +22,19 @@ For instance, single span: \code{"l1"}, \code{"r1"}; or multiple spans: \code{c(
 A tibble data frame
 }
 \description{
-This function is designed to handle the output of \code{\link{colloc_leipzig}} to generate a tidy data frame required as input of \code{\link{collex_fye}}. The latter is used to compute collexeme/collocate analysis using one-tailed \emph{Fisher-Yates Exact} test.
+This function is designed to handle the output of \code{\link{colloc_leipzig}} to generate a tidy data frame required as input of \code{\link{collex_fye}}.
+    The latter is used to compute collexeme/collocate strength using one-tailed \emph{Fisher-Yates Exact} test.
 }
 \examples{
 \dontrun{
 # retrieve collocates for a given word
 rgx <- "\\\\bmengakhir\\\\b"
 coll_df <- colloc_leipzig(leipzig_path = leipzig_corpus_path,
-                       pattern = rgx,
-                         window = "r",
-                         span = 4,
-                         save_results = FALSE,
-                         to_lower_colloc = TRUE)
+                          pattern = rgx,
+                          window = "r",
+                          span = 4,
+                          save_results = FALSE,
+                          to_lower_colloc = TRUE)
 
 # get only the collocates output
 list_output <- coll_df$collocates
@@ -41,9 +42,9 @@ list_output <- coll_df$collocates
 # collstr analysis for collocates from Leipzig Corpora
 ### prepare input table for coll.analysis ### <--- HERE IS THE CALL FOR collex_prepare_leipzig()
 collex_tb <-collex_prepare_leipzig(list_output = coll_df,
-                                leipzig_wordlist_path = leipzig_mywordlist_path,
-                                node_pattern = rgx,
-                                span = c("r1"))
+                                   leipzig_wordlist_path = leipzig_mywordlist_path,
+                                   node_pattern = rgx,
+                                   span = c("r1"))
 # remove any NA row data
 collex_tb <- dplyr::filter_all(collex_tb,
                               dplyr::all_vars(!is.na(.)))

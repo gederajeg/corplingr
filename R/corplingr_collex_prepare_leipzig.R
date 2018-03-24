@@ -48,6 +48,7 @@
 #' @importFrom stringr str_extract
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_which
+#' @export
 
 collex_prepare_leipzig <- function(list_output = NULL,
                                    leipzig_wordlist_path = leipzig_mywordlist_path,

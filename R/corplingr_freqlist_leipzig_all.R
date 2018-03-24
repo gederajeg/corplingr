@@ -61,7 +61,7 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
       return(freqlist)
       cat('Done!\n')
     } else if (length(leipzig_path) > 1) {
-      freqlist_all[i] <- list(freqlist)
+      freqlist_all[[i]] <- list(freqlist)
       cat(paste("Done with corpus no. ", i, "!\n\n", sep = ""))
     }
   }

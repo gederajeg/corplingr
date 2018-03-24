@@ -40,8 +40,8 @@ leipzig_cleaned_name <- stringr::str_replace(basename(leipzig_cleaned_path), "^c
 # get the complete path to each file of the leipzig corpora wordlist
 leipzig_wordlist_path <- dir(path = leipzig_wordlist_directory, full.names = TRUE)
 leipzig_wordlist_name <- stringr::str_replace(basename(leipzig_wordlist_path), "-words.*$", "")
-leipzig_mywordlist_path <- dir(path = leipzig_corpus_directory, pattern = "_wordlist__", full.names = TRUE)
-leipzig_mywordlist_name <- stringr::str_replace(basename(leipzig_mywordlist_path), "^corpus_.+?__(?=ind)", "")
+leipzig_mywordlist_path <- dir(path = leipzig_corpus_directory, pattern = "_wordlist__.+?\\.txt$", full.names = TRUE)
+leipzig_mywordlist_name <- stringr::str_replace_all(basename(leipzig_mywordlist_path), "(^corpus_.+?__(?=ind)|\\.txt$)", "")
 
 # generate internal data
 devtools::use_data(leipzig_corpus_name,
@@ -56,8 +56,8 @@ devtools::use_data(leipzig_corpus_name,
                    #leipzig_wordlist_directory,
                    leipzig_wordlist_name,
                    leipzig_wordlist_path,
-                   #leipzig_mywordlist_path,
-                   #leipzig_mywordlist_name,
+                   leipzig_mywordlist_path,
+                   leipzig_mywordlist_name,
                    stopwords,
                    stopwords1,
                    stopwords2,

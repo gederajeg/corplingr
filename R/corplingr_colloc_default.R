@@ -1,5 +1,8 @@
 #' Collocates retrieval for raw corpus text
 #'
+#' @description This function retrieve collocates for a word within the user-defined context window based on raw/unannotated corpus texts.
+#'     The function use vectorisation approach to determine the \bold{vector}-position of the collocates in relation to the vector-position of the node-word in the corpus word-vector.
+#'     There is the argument of \code{tokenise_corpus_to_sentence} (cf. below) that allows user to first split the input, raw corpus into character vector whose elements correspond to a sentence line.
 #' @param corpus_path character strings of (full) filepath for the corpus text files in \code{.txt} plain-text format.
 #' @param corpus_list a named list object containing elements constituting a corpus text.
 #'     The name of each element should correspond to the corpus file.
@@ -31,6 +34,7 @@
 #' @importFrom rlang .data
 #' @importFrom purrr is_null
 #' @importFrom dplyr progress_estimated
+#' @export
 #é
 colloc_default <- function(corpus_path = NULL,
                            corpus_list = NULL,

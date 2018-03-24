@@ -1,6 +1,7 @@
 #' Collocates retrieval on sentence-based corpus
 #'
 #' @description Perform collocate search for a given word/pattern based on corpus text files with one sentence per line (e.g., the Leipzig Corpora) (cf. \bold{Details} below).
+#'     If the input is otherwise, such that each line of the corpus does not correspond to a sentence, use \code{\link{colloc_default}}.
 #' @param corpus_path character strings of (full) filepath for the corpus text files in \code{.txt} plain-text format.
 #'     The corpus file IS a sentence-based corpus, meaning that each line of the file corresponds to one sentence.
 #'     Each sentence can be in successive, cohesive sequence (e.g. based on a Novel) or randomised (as in the Leipzig Corpora).

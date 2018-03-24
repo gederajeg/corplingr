@@ -35,6 +35,7 @@ A tbl_df of raw collocates.
 }
 \description{
 Perform collocate search for a given word/pattern based on corpus text files with one sentence per line (e.g., the Leipzig Corpora) (cf. \bold{Details} below).
+    If the input is otherwise, such that each line of the corpus does not correspond to a sentence, use \code{\link{colloc_default}}.
 }
 \details{
 This function, which is largely built on top of the \code{tidyverse}, is specifically designed to handle collocates search that is not crossing boundary of the sentence in which the search word/pattern occurs.

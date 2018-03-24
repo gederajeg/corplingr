@@ -3,6 +3,7 @@
 export(collex_fye)
 export(collex_prepare)
 export(collex_prepare_leipzig)
+export(colloc_default)
 export(colloc_leipzig)
 export(concord_leipzig)
 export(concord_others)

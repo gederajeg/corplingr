@@ -41,7 +41,7 @@ list_output <- coll_df$collocates
 
 # collstr analysis for collocates from Leipzig Corpora
 ### prepare input table for coll.analysis ### <--- HERE IS THE CALL FOR collex_prepare_leipzig()
-collex_tb <-collex_prepare_leipzig(list_output = coll_df,
+collex_tb <- collex_prepare_leipzig(list_output = coll_df,
                                    leipzig_wordlist_path = leipzig_mywordlist_path,
                                    node_pattern = rgx,
                                    span = c("r1"))

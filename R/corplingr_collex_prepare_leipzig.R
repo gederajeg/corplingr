@@ -25,7 +25,7 @@
 #'
 #' # collstr analysis for collocates from Leipzig Corpora
 #' ### prepare input table for coll.analysis ### <--- HERE IS THE CALL FOR collex_prepare_leipzig()
-#' collex_tb <-collex_prepare_leipzig(list_output = coll_df,
+#' collex_tb <- collex_prepare_leipzig(list_output = coll_df,
 #'                                    leipzig_wordlist_path = leipzig_mywordlist_path,
 #'                                    node_pattern = rgx,
 #'                                    span = c("r1"))
@@ -64,42 +64,78 @@
 collex_prepare_leipzig <- function(list_output = NULL,
                                    leipzig_wordlist_path = leipzig_mywordlist_path,
                                    node_pattern = "regex for the node word",
-                                   span = NULL) {
+                                   span = NULL,
+                                   stopwords_list = NULL) {
 
+  # get the raw collocates table
   coll_df <- list_output[[1]]
 
+  # check if stopwords will be removed from the collocates table
+  if (!purrr::is_null(stopwords_list)) {
+    message("You chose to REMOVE stopwords from the collocate list!")
+    coll_df <- dplyr::filter(coll_df, !.data$w %in% stopwords_list)
+  } else {
+    message("You chose to RETAIN stopwords from the collocate list!")
+  }
+
+  # get the unique corpus names from the collocates table
   corpus_colloc <- unique(coll_df$corpus)
+
+  # use the used corpus names to search for collocates as indices for wordlist files included
   leipzig_wordlist_name <- stringr::str_extract(basename(leipzig_wordlist_path), "(?<=__)(.+?)(?=\\.txt$)")
 
+  # get the total occurrence of the node pattern based on its occurrences in the collocates table
+  n_pattern <- dim(coll_df[coll_df$w_span == "node", ])[1]
+
+  # retrieve only the collocates
   coll_df <- dplyr::filter(coll_df, .data$w_span != "node")
 
+  # check if the collocates to be measured is restricted to particular span from the node-word
   if (!purrr::is_null(span)) {
     coll_df <- dplyr::filter(coll_df, .data$w_span %in% span)
   }
+
+  # make sure that the collocates for each occurrences of the node in each sentence are counted once
   coll_df <- dplyr::group_by(coll_df, .data$w, .data$sent_num, .data$corpus)
-  coll_df <- dplyr::distinct(coll_df)
+  coll_df <- dplyr::distinct(coll_df) # here is the function to get distinct collocates per node per sentence
   coll_df <- dplyr::ungroup(coll_df)
+
+  # get the count of the collocates frequency
   coll_df_freq <- dplyr::count(coll_df, .data$w, sort = TRUE)
   coll_df_freq <- dplyr::rename(coll_df_freq, a = .data$n)
 
+  # prepare data to load wordlist file of the corpus used to retrieve the collocates
   included_corpus_worlist <- leipzig_wordlist_path[which(corpus_colloc %in% leipzig_wordlist_name)]
-  cat("Loading all wordlist table for each corpus...\n")
+  message("Loading all wordlist table for each corpus...")
   wordlist_all <- vector(mode = "list", length = length(included_corpus_worlist))
   for (i in seq_along(included_corpus_worlist)) {
     wl <- readr::read_tsv(file = included_corpus_worlist[i])
     colnames(wl)[stringr::str_which(colnames(wl), "^word$")] <- "w"
     wordlist_all[[i]] <- wl
   }
-  cat("Summarising all word frequency...\n")
+  message("Summarising all word frequency...")
+
+  # combined all wordlist data frame
   wordlist_all <- dplyr::bind_rows(wordlist_all)
+
+  # remove stopwords from wordlist data frames
+  if (!purrr::is_null(stopwords_list)) {
+    wordlist_all <- dplyr::filter(wordlist_all, !.data$w %in% stopwords_list)
+  } else {
+    cat(" ")
+  }
+
+  # summarising all the wordlist token frequency
   wordlist_all <- dplyr::group_by(wordlist_all, .data$w)
   wordlist_all <- dplyr::summarise(wordlist_all, n_w_in_corp = sum(.data$n))
   wordlist_all <- dplyr::ungroup(wordlist_all)
 
+  # get the total corpus size from tallying token frequency in each wordlist table
   corpus_size <- unname(unlist(dplyr::tally(wordlist_all, .data$n_w_in_corp)))
-  n_pattern <- dplyr::filter(wordlist_all, stringr::str_detect(.data$w, node_pattern))
-  n_pattern <- sum(dplyr::pull(n_pattern, .data$n_w_in_corp))
+  # n_pattern <- dplyr::filter(wordlist_all, stringr::str_detect(.data$w, node_pattern))
+  # n_pattern <- sum(dplyr::pull(n_pattern, .data$n_w_in_corp))
 
+  # prepare the output tabble for collexeme analysis
   collex_tb <- dplyr::left_join(coll_df_freq, wordlist_all, by = "w")
   collex_tb$corpus_size <- corpus_size
   collex_tb$n_pattern <- n_pattern

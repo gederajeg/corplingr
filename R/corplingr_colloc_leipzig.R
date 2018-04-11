@@ -134,10 +134,10 @@ colloc_leipzig <- function(leipzig_path = NULL,
     if (typeof(corpus_input) == "character") {
       # read in the corpus text if it is a filepath
       corpora <- readr::read_lines(file = corpus_input[c])
-      cat('"', basename(corpus_input[c]), '" ', "has been loaded!\n", sep = "")
+      message(paste('"', basename(corpus_input[c]), '" ', "has been loaded!\n", sep = ""))
     } else if (typeof(corpus_input) == "list") {
       corpora <- corpus_input[[c]]
-      cat('Processing "', corpus_names[c], '"...\n', sep = "")
+      message(paste('Processing "', corpus_names[c], '"...\n', sep = ""))
     }
 
     for (r in seq_along(pattern)) {
@@ -148,12 +148,12 @@ colloc_leipzig <- function(leipzig_path = NULL,
       # detect if any matches found
       if (length(sub_corpus) == 0) {
 
-        cat("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus file!\n\n")
+        message("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus file!\n\n")
         next
 
       } else {
 
-        cat("At least one match for the search pattern is detected in the corpus!\n\n")
+        message("At least one match for the search pattern is detected in the corpus!\n\n")
 
         ## PREPARE THE MATCHED SENTENCES
         # detect the sentence number in which the match is found
@@ -282,7 +282,7 @@ colloc_leipzig <- function(leipzig_path = NULL,
             #all_sent_match <- dplyr::bind_rows(all_sent_match, full_text_counter)
             p$pause(0.05)$tick()$print()
             if (s == length(sent_with_match)) {
-              cat("\nDone gathering the collocates for each sentence!\n\n")
+              message("\nDone gathering the collocates for each sentence!\n\n")
             }
           }
         } # end of "s" loop
@@ -307,7 +307,7 @@ colloc_leipzig <- function(leipzig_path = NULL,
     if (save_results == TRUE) {
       readr::write_delim(x = colloc_all, path = coll_output_name, delim = "\t", append = TRUE)
       readr::write_delim(x = sent_match_all, path = sent_output_name, delim="\t", append = TRUE)
-      cat("Collocates table and sentence match of the node have been saved!\n\n")
+      message("Collocates table and sentence match of the node have been saved!\n\n")
     } else {
       out <- list(colloc_all, sent_match_all)
       names(out) <- c("collocates", "sentence_matches")

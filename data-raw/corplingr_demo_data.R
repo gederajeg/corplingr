@@ -38,17 +38,17 @@ devtools::use_data(demo_corpus_bali, demo_corpus_id, demo_corpus_leipzig, overwr
 
 
 # test colloc_default
-dfid <- colloc_default(corpus_list = demo_corpus_id,
-                       pattern = "jalan",
-                       tokenise_corpus_to_sentence = TRUE)
-collex_tb <- collex_prepare(dfid, "r1")
-collex_tb <- dplyr::mutate(collex_tb, collstr = collex_fye(a, corpus_size, n_w_in_corp, n_pattern))
+#dfid <- colloc_default(corpus_list = demo_corpus_id,
+ #                      pattern = "jalan",
+  #                     tokenise_corpus_to_sentence = TRUE)
+#collex_tb <- collex_prepare(dfid, "r1")
+#collex_tb <- dplyr::mutate(collex_tb, collstr = collex_fye(a, corpus_size, n_w_in_corp, n_pattern))
 
 
-df <- colloc_default(corpus_path = orti_bali_path[1:5], pattern = "^nuju$")
-typeof(df)
-length(df)
+#df <- colloc_default(corpus_path = orti_bali_path[1:5], pattern = "^nuju$")
+#typeof(df)
+#length(df)
 
-df1 <- colloc_default(corpus_list = demo_corpus_bali, pattern = "^nuju$")
-typeof(df1)
-length(df1)
+#df1 <- colloc_default(corpus_list = demo_corpus_bali, pattern = "^nuju$")
+#typeof(df1)
+#length(df1)

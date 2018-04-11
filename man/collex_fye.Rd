@@ -7,7 +7,8 @@
 collex_fye(a, n_corpus = "total size of the corpus",
   n_coll = "total frequency of collexemes/collocates in the corpus as a whole",
   n_cxn = "total frequency of the construction/node word in the corpus as a whole",
-  two_sided = FALSE, collstr_res = TRUE, float = 4)
+  two_sided = FALSE, collstr_res = TRUE, float = 3,
+  mpfr_precision = 500)
 }
 \arguments{
 \item{a}{cell \code{a} in a 2-by-2 crosstabulation matrix (viz. representing the co-occurrence tokens of the levels of the variables. For instance, word-word co-occurrences, or word-construction co-occurrences).}
@@ -23,6 +24,8 @@ collex_fye(a, n_corpus = "total size of the corpus",
 \item{collstr_res}{logical; whether output the FYE \emph{p}-value as the Collostruction Strength value (\code{TRUE} -- the default) or just report the \emph{p}-value (\code{FALSE}).}
 
 \item{float}{the floating digits of the Collostruction Strength. The default is \code{3}.}
+
+\item{mpfr_precision}{a number indicating the maximal precision to be used in \bold{bits}. This is passed to the \code{precBits} argument of \code{\link[Rmpfr]{mpfr}}.}
 }
 \value{
 Numeric vector of the same length as \code{a} interpreted as the Collostruction Strength of the construction/node word with the collexemes/collocates.

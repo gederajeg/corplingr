@@ -70,7 +70,7 @@ colloc_sentence <- function(corpus_path = "(full) filepath to sentence-based cor
     match_id <- stringr::str_which(string = corpus,
                                    pattern = pattern_rgx)
     if (length(match_id) == 0) {
-      cat("SORRY! No match found for the pattern!\nTry another corpus!\n\n")
+      message("SORRY! No match found for the pattern!\nTry another corpus!\n\n")
       next
     }
     sent_with_match <- corpus[match_id]
@@ -146,7 +146,7 @@ colloc_sentence <- function(corpus_path = "(full) filepath to sentence-based cor
       all_all_colloc <- dplyr::bind_rows(all_all_colloc, all_colloc)
     }
   }
-  cat("All done!\n")
+  message("All done!\n")
   return(all_all_colloc)
 }
 

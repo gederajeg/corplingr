@@ -28,16 +28,16 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
                                  leipzig_path = NULL,
                                  case_insensitive = TRUE) {
   if (length(leipzig_path) > 1) {
-    cat(paste("You chose to generate frequency list for all words across ", length(leipzig_path), " corpus files!\n", sep = ""))
-    choice <- utils::menu(choices = c("CONTINUE", "EXIT"),
-                   title = "If you wish to continue, type-in '1' into the console (without the quote!); otherwise, type-in '2'.")
-    if (choice == 1) {
+    message(paste("You chose to generate frequency list for all words across ", length(leipzig_path), " corpus files!\n", sep = ""))
+    #choice <- utils::menu(choices = c("CONTINUE", "EXIT"),
+    #               title = "If you wish to continue, type-in '1' into the console (without the quote!); otherwise, type-in '2'.")
+    #if (choice == 1) {
       freqlist_all <- vector(mode = "list", length = length(leipzig_path))
       names(freqlist_all) <- stringr::str_replace(basename(leipzig_path), "-sentences\\..+$", "")
-    } else {
-      messages <- "You decided to exit the operation!"
-      return(print(messages))
-    }
+    #} else {
+      #messages <- "You decided to exit the operation!"
+      #return(print(messages))
+    #}
 
   } else if (length(leipzig_path) == 1) {
     freqlist <- tibble::tibble()
@@ -61,7 +61,8 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
       return(freqlist)
       cat('Done!\n')
     } else if (length(leipzig_path) > 1) {
-      freqlist_all[[i]] <- list(freqlist)
+      #freqlist_all[[i]] <- list(freqlist)
+      freqlist_all[[i]] <- freqlist
       cat(paste("Done with corpus no. ", i, "!\n\n", sep = ""))
     }
   }

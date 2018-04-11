@@ -122,6 +122,6 @@ concord_others <- function(corpus_vector = "character vector of text loaded/read
     cat("Done!\n")
     return(concord_df)
   } else {
-    cat("Sorry; no match found! Try another corpus/pattern!\n")
+    message("Sorry; no match found! Try another corpus/pattern!\n")
   }
 }

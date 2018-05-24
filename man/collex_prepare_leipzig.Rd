@@ -6,7 +6,8 @@
 \usage{
 collex_prepare_leipzig(list_output = NULL,
   leipzig_wordlist_path = leipzig_mywordlist_path,
-  node_pattern = "regex for the node word", span = NULL)
+  node_pattern = "regex for the node word", span = NULL,
+  stopwords_list = NULL)
 }
 \arguments{
 \item{list_output}{The list output of \code{\link{colloc_leipzig}}.}

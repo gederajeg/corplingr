@@ -12,3 +12,8 @@
 #'
 #' A random ten corpus files of Indonesian short stories retrieved from online blog. These corpus files are raw plain texts without any annotation and which have not been split by sentences.
 "demo_corpus_id"
+
+#' Stopwords
+#'
+#' List of Indonesian stopwords
+"stopwords"

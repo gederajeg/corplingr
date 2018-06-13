@@ -18,6 +18,8 @@ collex_prepare_leipzig(list_output = NULL,
 
 \item{span}{Character vector of the context-window span user wants to focus on for the collexeme/collocate analysis.
 For instance, single span: \code{"l1"}, \code{"r1"}; or multiple spans: \code{c("r1", "r2")}.}
+
+\item{stopwords_list}{A character vector of the stopword list.}
 }
 \value{
 A tibble data frame
@@ -45,7 +47,8 @@ list_output <- coll_df$collocates
 collex_tb <- collex_prepare_leipzig(list_output = coll_df,
                                    leipzig_wordlist_path = leipzig_mywordlist_path,
                                    node_pattern = rgx,
-                                   span = c("r1"))
+                                   span = c("r1"),
+                                   stopwords_list = NULL)
 # remove any NA row data
 collex_tb <- dplyr::filter_all(collex_tb,
                               dplyr::all_vars(!is.na(.)))

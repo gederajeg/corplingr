@@ -84,7 +84,7 @@ collex_prepare_leipzig <- function(list_output = NULL,
   corpus_colloc <- unique(coll_df$corpus)
 
   # use the used corpus names to search for collocates as indices for wordlist files included
-  leipzig_wordlist_name <- stringr::str_extract(basename(leipzig_wordlist_path), "(?<=__)(.+?)(?=\\.txt$)")
+  leipzig_wordlist_name <- stringr::str_extract(basename(leipzig_wordlist_path), "(?<=__)(.+?)(?=\\.(txt|RData)$)")
 
   # get the total occurrence of the node pattern based on its occurrences in the collocates table
   n_pattern <- dim(coll_df[coll_df$w_span == "node", ])[1]
@@ -111,7 +111,24 @@ collex_prepare_leipzig <- function(list_output = NULL,
   message("Loading all wordlist table for each corpus...")
   wordlist_all <- vector(mode = "list", length = length(included_corpus_worlist))
   for (i in seq_along(included_corpus_worlist)) {
-    wl <- readr::read_tsv(file = included_corpus_worlist[i])
+
+    if (grepl("txt$", included_corpus_worlist[i], perl = TRUE)) {
+
+      wl <- readr::read_tsv(file = included_corpus_worlist[i])
+
+    } else if (grepl("RData$", included_corpus_worlist[i], perl = TRUE)) {
+
+      load(included_corpus_worlist[i])
+      wl <- tibble::data_frame(corpus_id = as.character(wlist.df$corpus_id),
+                               word = as.character(wlist.df$word),
+                               n = wlist.df$n)
+
+    } else {
+
+      stop("The wordlist file should be in either `.txt` or `.RData` file!\n")
+
+    }
+
     colnames(wl)[stringr::str_which(colnames(wl), "^word$")] <- "w"
     wordlist_all[[i]] <- wl
   }

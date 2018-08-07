@@ -3,7 +3,7 @@
 #' @description This function is designed to handle the output of \code{\link{colloc_leipzig}} to generate a tidy data frame required as input of \code{\link{collex_fye}}.
 #'     The latter is used to compute collexeme/collocate strength using one-tailed \emph{Fisher-Yates Exact} test.
 #' @param list_output The list output of \code{\link{colloc_leipzig}}.
-#' @param leipzig_wordlist_path Full path to the wordlist table for each Leipzig Corpus File
+#' @param leipzig_wordlist_path Full path to the wordlist table for each Leipzig Corpus File. This can be a plain text file or an .RData file.
 #' @param node_pattern Regex patterns of the node word specified in \code{\link{colloc_leipzig}}.
 #' @param span Character vector of the context-window span user wants to focus on for the collexeme/collocate analysis.
 #'     For instance, single span: \code{"l1"}, \code{"r1"}; or multiple spans: \code{c("r1", "r2")}.

@@ -12,7 +12,7 @@ collex_prepare_leipzig(list_output = NULL,
 \arguments{
 \item{list_output}{The list output of \code{\link{colloc_leipzig}}.}
 
-\item{leipzig_wordlist_path}{Full path to the wordlist table for each Leipzig Corpus File}
+\item{leipzig_wordlist_path}{Full path to the wordlist table for each Leipzig Corpus File. This can be a plain text file or an .RData file.}
 
 \item{node_pattern}{Regex patterns of the node word specified in \code{\link{colloc_leipzig}}.}
 

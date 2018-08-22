@@ -16,7 +16,7 @@ freqlist_leipzig_citation(pattern = NULL,
 \item{case_insensitive}{whether to search case-insensitive pattern (\code{TRUE} -- the default) or not (\code{FALSE}).}
 }
 \value{
-character vectors containing the info for 'corpus names', 'sentence number', and 'sentence match'.
+A tibble containing the info for 'corpus names', 'sentence number', 'node word', and 'sentence match'.
 }
 \description{
 A function to retrieve a full-sentence citation for a match/pattern. This function can be used to check the full sentence in which a word/pattern occur in a corpus.

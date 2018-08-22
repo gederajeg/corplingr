@@ -5,18 +5,29 @@
 #' @param pattern regular expressions/strings of the target words/patterns.
 #' @param leipzig_path complete file path of the Leipzig corpora to search for full citation of the words/patterns of interest.
 #' @param case_insensitive whether to search case-insensitive pattern (\code{TRUE} -- the default) or not (\code{FALSE}).
-#' @return character vectors containing the info for 'corpus names', 'sentence number', and 'sentence match'.
+#' @return A tibble containing the info for 'corpus names', 'sentence number', 'node word', and 'sentence match'.
 #' @importFrom stringr str_c
-#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_replace
 #' @importFrom stringr str_to_upper
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr quo_name
+#' @importFrom dplyr quo
+#' @importFrom tibble tibble
+#' @importFrom rlang :=
 #' @export
 
 freqlist_leipzig_citation <- function(pattern = NULL, leipzig_path = "(full) filepath to Leipzig corpus files", case_insensitive = TRUE) {
-  sent <- vector()
+  sent <- tibble::tibble()
+  corpus <- dplyr::quo(corpus)
+  sent_id <- dplyr::quo(sent_id)
+  node <- dplyr::quo(node)
+  node_sentences <- dplyr::quo(node_sentences)
+
   out <- concord_leipzig(pattern = pattern, leipzig_path, case_insensitive = case_insensitive)
-  cat("Collecting full-citation(s) for the search word(s) done!\nOutput format: CORPUS - SENTENCE_NUMBER - CITATION(S)\n-------------------------------------------------------\n")
-  collector <- stringr::str_c(out$corpus, " | ", out$sent_id, " | ", out$node_sentences, sep="")
-  collector <- stringr::str_replace_all(collector, 'nodeword', stringr::str_c("<node>", stringr::str_to_upper(out$node), "</node>", sep = ""))
-  sent <- c(sent, collector)
+
+  collector <- dplyr::select(out, !!corpus, !!sent_id, !!node, !!node_sentences)
+  collector <- dplyr::mutate(collector,
+                             !!dplyr::quo_name(node_sentences) := stringr::str_replace(!!node_sentences, "nodeword", str_c("<node>", !!node, "</node>", sep = "")))
+  sent <- dplyr::bind_rows(sent, collector)
   return(sent)
 }

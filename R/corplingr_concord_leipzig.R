@@ -4,7 +4,7 @@
 #' @param leipzig_path character stringrs of (i) file names of the Leipzig corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.
 #' @param pattern regular expressions/exact patterns for the target pattern.
 #' @param case_insensitive whether the search ignores case (TRUE -- the default) or not (FALSE).
-#' @return A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view.
+#' @return A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view; and (iv) \code{node_sentences} containing the full sentences with the search pattern replaced with \code{"nodeword"} string.
 #' @importFrom purrr map
 #' @importFrom purrr map_df
 #' @importFrom purrr pmap
@@ -66,22 +66,12 @@ concord_leipzig <- function(leipzig_path = NULL,
 
   for (i in seq_along(leipzig_path)) {
 
-    # read in the corpus text
-    #if (any(str_detect(leipzig_path, "corpus_sent_vector")) == TRUE) {
-     # cat("Using cleaned vector corpus!\n")
-      #load(leipzig_path[i])
-      #corpora <- sentence_cleaned#; rm(corpus.sent.size, corpus.total.size)
-      #corpus_id <- str_replace(str_replace(basename(leipzig_path[i]), "corpus.+?__(?=ind)", ""),
-      #                         "\\.RData", "")
-      #cat('"', corpus_id, '" ', "has been loaded!\n", sep = "")
-    #} else {
       corpora <- read_lines(file = leipzig_path[i])
       cat('"', basename(leipzig_path[i]), '" ', "has been loaded!\n", sep = "")
 
       # retrieve the corpus names
       corpus_id <- basename(leipzig_path[i])
       corpus_id <- stringr::str_replace(corpus_id, '-sentences.*$', '')
-    #}
 
     for (r in seq_along(pattern)) {
       # progress report
@@ -132,7 +122,7 @@ concord_leipzig <- function(leipzig_path = NULL,
                  right = stringr::str_trim(stringr::str_sub(.data$sentences, start = end + 1, end = stringr::str_length(.data$sentences))),
                  right = replace(.data$right, nchar(.data$right) <= 0, "~"),
                  node_sentences = stringr::`str_sub<-`(.data$sentences, start = start, end = end, value = "nodeword")) %>%
-          select(-.data$sentences, -.data$node_sentences)
+          select(-.data$sentences)
 
         full_concordance <- bind_rows(full_concordance, concordance)
 

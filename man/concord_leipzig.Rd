@@ -15,7 +15,7 @@ concord_leipzig(leipzig_path = NULL, pattern = NULL,
 \item{case_insensitive}{whether the search ignores case (TRUE -- the default) or not (FALSE).}
 }
 \value{
-A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view.
+A concordance-tibble consisting of (i) \code{start} and \code{end} character position of the \code{pattern} in the corpus; (ii) \code{corpus} file names and \code{sentence IDs} in which the \code{pattern} is found; (iii) \code{left}, \code{node}, and \code{right} concordance-style view; and (iv) \code{node_sentences} containing the full sentences with the search pattern replaced with \code{"nodeword"} string.
 }
 \description{
 The function produces tibble-output concordances for Leipzig Corpora files.

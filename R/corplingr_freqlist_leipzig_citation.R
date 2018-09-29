@@ -25,9 +25,23 @@ freqlist_leipzig_citation <- function(pattern = NULL, leipzig_path = "(full) fil
 
   out <- concord_leipzig(pattern = pattern, leipzig_path, case_insensitive = case_insensitive)
 
-  collector <- dplyr::select(out, !!corpus, !!sent_id, !!node, !!node_sentences)
-  collector <- dplyr::mutate(collector,
-                             !!dplyr::quo_name(node_sentences) := stringr::str_replace(!!node_sentences, "nodeword", str_c("<node>", !!node, "</node>", sep = "")))
-  sent <- dplyr::bind_rows(sent, collector)
-  return(sent)
+  if (any(dim(out)[1] > 0)) {
+
+    collector <- dplyr::select(out,
+                               !!corpus,
+                               !!sent_id,
+                               !!node,
+                               !!node_sentences)
+    collector <- dplyr::mutate(collector,
+                               !!dplyr::quo_name(node_sentences) := stringr::str_replace(!!node_sentences,
+                                                                                         "nodeword",
+                                                                                         str_c("<node>",
+                                                                                               !!node,
+                                                                                               "</node>",
+                                                                                               sep = "")
+                                                                                         )
+                               )
+    sent <- dplyr::bind_rows(sent, collector)
+    return(sent)
+  }
 }

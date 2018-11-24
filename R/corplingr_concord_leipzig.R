@@ -126,7 +126,6 @@ concord_leipzig <- function(leipzig_path = NULL,
 
         full_concordance <- bind_rows(full_concordance, concordance)
 
-        rm(corpora)
       }
     }
   }

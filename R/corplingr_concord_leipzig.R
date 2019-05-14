@@ -67,7 +67,7 @@ concord_leipzig <- function(leipzig_path = NULL,
   for (i in seq_along(leipzig_path)) {
 
       corpora <- read_lines(file = leipzig_path[i])
-      cat('"', basename(leipzig_path[i]), '" ', "has been loaded!\n", sep = "")
+      message(paste('"', basename(leipzig_path[i]), '" ', "has been loaded!\n", sep = ""))
 
       # retrieve the corpus names
       corpus_id <- basename(leipzig_path[i])
@@ -75,7 +75,7 @@ concord_leipzig <- function(leipzig_path = NULL,
 
     for (r in seq_along(pattern)) {
       # progress report
-      cat("Searching pattern no. ", r, " in corpus no. ", i, "!\n", sep = "")
+      message(paste("Searching pattern no. ", r, " in corpus no. ", i, "!\n", sep = ""))
 
       # detect the search pattern and retrieve the citation with the match
       match_id <- stringr::str_which(corpora, stringr::regex(pattern[r], ignore_case = case_insensitive))
@@ -90,12 +90,12 @@ concord_leipzig <- function(leipzig_path = NULL,
       # detect if any matches found
       if (length(sub_corpus) == 0) {
 
-        cat("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus!\n\n")
+        message("NO MATCH(ES) for the pattern you are searching for!\nTRY another corpus!\n\n")
         next
 
       } else {
 
-        cat("At least one match for the search pattern is detected in the corpus!\n\n")
+        message("At least one match for the search pattern is detected in the corpus!\n\n")
         match_length <- stringr::str_count(sub_corpus,
                                            stringr::regex(pattern[r],
                                                           ignore_case = case_insensitive)) # get the number of matches of the search word found in the corpus

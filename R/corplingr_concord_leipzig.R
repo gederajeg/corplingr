@@ -121,7 +121,7 @@ concord_leipzig <- function(leipzig_path = NULL,
                  node = stringr::str_trim(stringr::str_sub(.data$sentences, start = start, end = end)),
                  right = stringr::str_trim(stringr::str_sub(.data$sentences, start = end + 1, end = stringr::str_length(.data$sentences))),
                  right = replace(.data$right, nchar(.data$right) <= 0, "~"),
-                 node_sentences = stringr::`str_sub<-`(.data$sentences, start = start, end = end, value = "nodeword")) %>%
+                 node_sentences = stringr::`str_sub<-`(.data$sentences, start = start, end = end, value = paste("<m>", .data$node, "</m>", sep = ""))) %>%
           select(-.data$sentences)
 
         full_concordance <- bind_rows(full_concordance, concordance)

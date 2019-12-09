@@ -40,7 +40,7 @@ collex_prepare <- function(list_output = "list output of 'colloc_default()'", sp
   all_word_vectors <- list_output[["wordlist_tb"]]
 
   if (!purrr::is_null(span)) {
-    all_colloc <- all_colloc[all_colloc$w_span %in% span, ]
+    all_colloc <- all_colloc[all_colloc$span %in% span, ]
   }
 
   # preparing another output tibble for conducting collocates/collexemes analysis

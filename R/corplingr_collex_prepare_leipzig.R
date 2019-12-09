@@ -117,7 +117,7 @@ collex_prepare_leipzig <- function(list_output = NULL,
       wl <- readr::read_tsv(file = included_corpus_worlist[i])
 
     } else if (grepl("RData$", included_corpus_worlist[i], perl = TRUE)) {
-
+      wlist.df <- dplyr::quo(wlist.df)
       load(included_corpus_worlist[i])
       wl <- tibble::data_frame(corpus_id = as.character(wlist.df$corpus_id),
                                word = as.character(wlist.df$word),

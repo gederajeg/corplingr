@@ -73,8 +73,8 @@ colloc_default <- function(corpus_path = NULL,
 
     # check the type of input file
     if (typeof(corpus_input) == "character") {
-      corpus_name <- stringr::str_replace(basename(corpus_input[h]), "\\.txt$", "")
-      #cat(paste("Loading/reading the corpus ('", corpus_name, "') into R...\n", sep = ""))
+      corpus_names <- stringr::str_replace(basename(corpus_input[h]), "\\.txt$", "")
+      #cat(paste("Loading/reading the corpus ('", corpus_names, "') into R...\n", sep = ""))
 
       # load/read each corpus file
       corpus <- readr::read_lines(file = corpus_input[h])
@@ -87,9 +87,9 @@ colloc_default <- function(corpus_path = NULL,
 
       # define the corpus name
       if (purrr::is_null(names(corpus_input)) == TRUE) {
-        corpus_name <- stringr::str_c("corpus_no_", h, sep = "")
+        corpus_names <- stringr::str_c("corpus_no_", h, sep = "")
       } else {
-        corpus_name <- names(corpus_input)[h]
+        corpus_names <- names(corpus_input)[h]
       }
     }
 
@@ -114,15 +114,15 @@ colloc_default <- function(corpus_path = NULL,
     # store the word vector and original corpus as tibble data frame
     word_vector_tb <- tibble::tibble(w = word_vector,
                                      w_vector_pos = 1:length(word_vector),
-                                     sent_num = names(word_vector),
-                                     corpus_name = corpus_name)
+                                     sent_id = names(word_vector),
+                                     corpus_names = corpus_names)
     word_vector_tb <- dplyr::mutate(word_vector_tb,
-                                    sent_num = as.integer(stringr::str_replace_all(.data$sent_num, "(_\\d+$|^sent_)", "")))
+                                    sent_id = as.integer(stringr::str_replace_all(.data$sent_id, "(_\\d+$|^sent_)", "")))
     corpus <- stringr::str_replace_all(corpus,
                                        pattern = stringr::regex("(ZSENTENCEZ|zsentencez)", ignore_case = case_insensitive),
                                        replacement = "")
     corpus <- stringr::str_trim(corpus)
-    corpus_tb <- tibble::tibble(sent_num = 1:length(corpus),
+    corpus_tb <- tibble::tibble(sent_id = 1:length(corpus),
                                 sent_match = corpus)
 
     # get pattern/word vector position
@@ -142,10 +142,13 @@ colloc_default <- function(corpus_path = NULL,
 
       # extract the collocates
       colloc_pos_tb <- tibble::tibble(w_vector_pos = colloc_vector_pos,
-                                      w_span = names(colloc_vector_pos))
+                                      span = names(colloc_vector_pos))
       colloc_pos_tb <- colloc_pos_tb[!duplicated(colloc_pos_tb$w_vector_pos), ]
       colloc_temp_tb <- dplyr::left_join(colloc_pos_tb, word_vector_tb, by = "w_vector_pos")
-      colloc_temp_tb <- dplyr::left_join(colloc_temp_tb, corpus_tb, by = "sent_num")
+      colloc_temp_tb <- dplyr::left_join(colloc_temp_tb, corpus_tb, by = "sent_id")
+      colloc_temp_tb <- dplyr::select(colloc_temp_tb, .data$corpus_names,
+                                      .data$sent_id, .data$w, .data$span,
+                                      .data$sent_match)
 
       # store all collocates and remove the "ZSENTENCEZ/zsentencez" collocates
       all_colloc[[h]] <- dplyr::filter(colloc_temp_tb, !.data$w %in% c("ZSENTENCEZ", "zsentencez"))

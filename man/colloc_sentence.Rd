@@ -4,10 +4,12 @@
 \alias{colloc_sentence}
 \title{Collocates retrieval on sentence-based corpus}
 \usage{
-colloc_sentence(corpus_path = "(full) filepath to sentence-based corpus",
-  leipzig_input = TRUE, pattern = "regular expressions", window = c("r",
-  "l", "b"), span = 3, case_insensitive = TRUE, to_lower_colloc = TRUE,
-  save_interim_results = FALSE, coll_output_name = "colloc_tibble_out.txt")
+
+  colloc_sentence(corpus_path = "(full) filepath to sentence-based corpus",
+  leipzig_input = TRUE, pattern = "regular expressions",
+  window = c("r", "l", "b"), span = 3, case_insensitive = TRUE,
+  to_lower_colloc = TRUE, save_interim_results = FALSE,
+  coll_output_name = "colloc_tibble_out.txt")
 }
 \arguments{
 \item{corpus_path}{character strings of (full) filepath for the corpus text files in \code{.txt} plain-text format.

@@ -4,7 +4,8 @@
 \alias{corpus_size_leipzig}
 \title{Generate Leipzig corpus-size}
 \usage{
-corpus_size_leipzig(leipzig_path = "(full) filepath to Leipzig corpus files",
+
+  corpus_size_leipzig(leipzig_path = "(full) filepath to Leipzig corpus files",
   word_regex = "\\\\b(?i)([-a-zA-Z0-9]+)\\\\b")
 }
 \arguments{

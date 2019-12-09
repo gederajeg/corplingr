@@ -4,10 +4,10 @@
 \alias{colloc_default}
 \title{Collocates retrieval for raw corpus text}
 \usage{
-colloc_default(corpus_path = NULL, corpus_list = NULL, pattern = NULL,
-  window = "b", span = 3, word_split_regex = "([^a-zA-Z-]+|--)",
-  case_insensitive = TRUE, to_lower_colloc = TRUE,
-  tokenise_corpus_to_sentence = TRUE)
+colloc_default(corpus_path = NULL, corpus_list = NULL,
+  pattern = NULL, window = "b", span = 3,
+  word_split_regex = "([^a-zA-Z-]+|--)", case_insensitive = TRUE,
+  to_lower_colloc = TRUE, tokenise_corpus_to_sentence = TRUE)
 }
 \arguments{
 \item{corpus_path}{character strings of (full) filepath for the corpus text files in \code{.txt} plain-text format.}

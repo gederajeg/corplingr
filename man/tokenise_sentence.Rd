@@ -4,7 +4,8 @@
 \alias{tokenise_sentence}
 \title{Split a corpus by sentence-boundary}
 \usage{
-tokenise_sentence(strings = NULL, to_lower = TRUE, window_span = NULL)
+tokenise_sentence(strings = NULL, to_lower = TRUE,
+  window_span = NULL)
 }
 \arguments{
 \item{strings}{character vector of a corpus text.}

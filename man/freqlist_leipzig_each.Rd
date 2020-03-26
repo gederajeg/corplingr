@@ -4,9 +4,11 @@
 \alias{freqlist_leipzig_each}
 \title{Generate word-/regex-specific frequency list from the Leipzig Corpora}
 \usage{
-freqlist_leipzig_each(pattern = NULL,
+freqlist_leipzig_each(
+  pattern = NULL,
   leipzig_path = "(full) filepath to a (set of) Leipzig corpus files",
-  case_insensitive = TRUE)
+  case_insensitive = TRUE
+)
 }
 \arguments{
 \item{pattern}{the regular expressions/exact patterns for the target pattern/word whose frequency in a (set of) Leipzig Corpus file(s) you want to generate.}

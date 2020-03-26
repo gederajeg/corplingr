@@ -4,8 +4,7 @@
 \alias{concord_leipzig}
 \title{Generate tidyverse-style concordances for the Leipzig Corpora}
 \usage{
-concord_leipzig(leipzig_path = NULL, pattern = NULL,
-  case_insensitive = TRUE)
+concord_leipzig(leipzig_path = NULL, pattern = NULL, case_insensitive = TRUE)
 }
 \arguments{
 \item{leipzig_path}{character stringrs of (i) file names of the Leipzig corpus if they are already in the working directory, or (ii) the complete filepath to each of the Leipzig corpus files to be processed.}
@@ -41,6 +40,6 @@ concord_leipzig(leipzig_corpus_path, "menjalani") \%>\%
 # retain only the concordance, corpus name and sentence id
 select(-start, -end) \%>\%
 
-write_delim(path = "my_concordance.txt", delim = "\\t")
+write_delim(path = "my_concordance.txt", delim = "\t")
 }
 }

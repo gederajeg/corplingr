@@ -4,10 +4,13 @@
 \alias{concord_others}
 \title{Simple concordance function}
 \usage{
-
-  concord_others(corpus_vector = "character vector of text loaded/read into console",
-  pattern = "regular expressions", to_lower_corpus = TRUE,
-  case_insensitive = TRUE, context_char = 50)
+concord_others(
+  corpus_vector = "character vector of text loaded/read into console",
+  pattern = "regular expressions",
+  to_lower_corpus = TRUE,
+  case_insensitive = TRUE,
+  context_char = 50
+)
 }
 \arguments{
 \item{corpus_vector}{the vector of corpus texts.}
@@ -70,7 +73,7 @@ head(concordance)
 # it can be opened in a spreadsheet software for further annotation
 readr::write_delim(concordance,
                    path = "/Users/Primahadi/Desktop/my_concordance.txt",
-                   delim = "\\t")
+                   delim = "\t")
 }
 
 

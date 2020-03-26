@@ -4,8 +4,12 @@
 \alias{freqlist_leipzig_read}
 \title{Read in the wordlist files of the Leipzig Corpora}
 \usage{
-freqlist_leipzig_read(leipzig_wlist_path = leipzig_wordlist_path,
-  file_pattern = NULL, all = FALSE, lower_case = TRUE)
+freqlist_leipzig_read(
+  leipzig_wlist_path = leipzig_wordlist_path,
+  file_pattern = NULL,
+  all = FALSE,
+  lower_case = TRUE
+)
 }
 \arguments{
 \item{leipzig_wlist_path}{the file paths of the Leipzig wordlist files.}

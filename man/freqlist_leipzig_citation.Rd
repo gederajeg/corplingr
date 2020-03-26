@@ -4,9 +4,11 @@
 \alias{freqlist_leipzig_citation}
 \title{Check full sentence-citation for a pattern}
 \usage{
-freqlist_leipzig_citation(pattern = NULL,
+freqlist_leipzig_citation(
+  pattern = NULL,
   leipzig_path = "(full) filepath to Leipzig corpus files",
-  case_insensitive = TRUE)
+  case_insensitive = TRUE
+)
 }
 \arguments{
 \item{pattern}{regular expressions/strings of the target words/patterns.}

@@ -4,8 +4,7 @@
 \alias{collex_prepare}
 \title{Prepare data for collexeme/collocates analysis}
 \usage{
-collex_prepare(list_output = "list output of 'colloc_default()'",
-  span = NULL)
+collex_prepare(list_output = "list output of 'colloc_default()'", span = NULL)
 }
 \arguments{
 \item{list_output}{The list output of \code{colloc_default}.}

@@ -4,8 +4,11 @@
 \alias{freqlist_leipzig_all}
 \title{Frequency list of all words in a Leipzig Corpus file}
 \usage{
-freqlist_leipzig_all(split_regex = "([^a-zA-Z0-9-]+|--)",
-  leipzig_path = NULL, case_insensitive = TRUE)
+freqlist_leipzig_all(
+  split_regex = "([^a-zA-Z0-9-]+|--)",
+  leipzig_path = NULL,
+  case_insensitive = TRUE
+)
 }
 \arguments{
 \item{split_regex}{user-defined regular expressions to tokenise the corpus.}

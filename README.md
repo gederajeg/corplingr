@@ -28,3 +28,5 @@ You can install the development version from
 # install.packages("devtools")
 devtools::install_github("gederajeg/corplingr")
 ```
+
+More details later…

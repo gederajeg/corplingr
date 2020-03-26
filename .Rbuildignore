@@ -3,3 +3,6 @@
 ^data-raw$
 ^junk$
 ^experiment$
+^README\.Rmd$
+^\.travis\.yml$
+^codecov\.yml$

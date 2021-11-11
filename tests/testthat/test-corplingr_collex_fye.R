@@ -13,10 +13,15 @@ test_that("output of collex_fye is double", {
 })
 
 collex_tb <- collex_prepare(dfid, "r1")
-collex_tb <- dplyr::mutate(collex_tb, collstr = purrr::pmap_dbl(list(a, a_exp, n_w_in_corp, corpus_size, n_pattern), collex_fye, two_sided = TRUE, collstr_res = FALSE))
+
+## add artificial data so that lines when a < a_exp can be tested
+collex_tb1 <- rbind(collex_tb,
+                    tibble::tibble(w = "x", a = 1, n_w_in_corp = 342, corpus_size = 17152, n_pattern = 26, a_exp = as.double(2), obs_exp = "<"))
+
+collex_tb1 <- dplyr::mutate(collex_tb1, collstr = purrr::pmap_dbl(list(a, a_exp, n_w_in_corp, corpus_size, n_pattern), collex_fye, two_sided = FALSE, collstr_res = FALSE))
 
 test_that("output of collex_fye is double", {
-  expect_type(collex_tb[["collstr"]], "double")
+  expect_type(dplyr::mutate(collex_tb1, collstr = purrr::pmap_dbl(list(a, a_exp, n_w_in_corp, corpus_size, n_pattern), collex_fye, two_sided = TRUE, collstr_res = TRUE))[["collstr"]], "double")
 })
 
 collex_tb[3,2] <- NA

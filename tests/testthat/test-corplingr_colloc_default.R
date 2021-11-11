@@ -14,8 +14,5 @@ test_that("output colloc_default (now with filepath) is a list of three elements
 })
 
 test_that("non-matching pattern returns error", {
-  expect_error(corplingr::colloc_default(corpus_list = demo_corpus_bali,
-                                         pattern = "^sdhsajk$",
-                                         window = "b",
-                                         span = 3), regexp = "^No match is found\\!$")
+  expect_error(corplingr::colloc_default(corpus_path = c("mini_leipzig.txt", "mini_leipzig_01.txt"), pattern = "^sdhsajk$", window = "b", span = 3), regexp = "^No match is found\\!$")
 })

@@ -12,7 +12,7 @@ test_that("output of colloc_leipzig is a list of two elements", {
 
 colloc <- colloc_leipzig(leipzig_path = "mini_leipzig.txt",
                          pattern = "\\bfdhfghkjlvhj\\b",
-                         window = "b",
+                         window = "r",
                          span = 3,
                          save_results = FALSE,
                          to_lower_colloc = TRUE)

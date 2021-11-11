@@ -12,7 +12,7 @@
 #' @param span integer vector indicating the span of the collocate scope.
 #' @param word_split_regex user-defined regular expressions to tokenise the corpus.
 #'     The default is to split at non alphabetic characters but retain hypen "-" as to maintain reduplication, for instance.
-#'     The regex for this default setting is \code{""([^a-zA-ZÀ-ÖÙ-öù-ÿĀ-žḀ-ỿ]+|--)""}.
+#'     The regex for this default setting is \code{""([^a-zA-Z-]+|--)""}. Another possible splitting regex may include various characters with diacritics (e.g., \code{'([^a-zA-Z\u00c0-\u00d6\u00d9-\u00f6\u00f9-\u00ff\u0100-\u017e\u1e00-\u1eff]+|--)'})
 #' @param case_insensitive whether the search pattern ignores case (TRUE -- the default) or not (FALSE).
 #' @param to_lower_colloc whether to lowercase the retrieved collocates (TRUE -- default) or not (FALSE).
 #' @param tokenise_corpus_to_sentence whether to tokenise the input corpus by sentence so that the script can handle the collocates for not crossing sentence boundary.
@@ -41,7 +41,7 @@ colloc_default <- function(corpus_path = NULL,
                            pattern = NULL,
                            window = "b",
                            span = 3,
-                           word_split_regex = "([^a-zA-Z\u00c0-\u00d6\u00d9-\u00f6\u00f9-\u00ff\u0100-\u017e\u1e00-\u1eff]+|--)",
+                           word_split_regex = "([^a-zA-Z-]+|--)",
                            case_insensitive = TRUE,
                            to_lower_colloc = TRUE,
                            tokenise_corpus_to_sentence = TRUE) {

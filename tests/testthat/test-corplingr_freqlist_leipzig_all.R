@@ -19,5 +19,5 @@ test_that("output of freqlist_leipzig_all of one corpus file is a tibble data fr
 })
 
 test_that("output of freqlist_leipzig_all of one corpus file is a tibble data frame", {
-  expect_output(str(freqlist_leipzig_all(leipzig_path = c("mini_leipzig.txt", "mini_leipzig_01.txt"))), regexp = "(tibble|tbl(_df)?|data\\.frame)")
+  expect_output(str(freqlist_leipzig_all(leipzig_path = c("mini_leipzig.txt"))), regexp = "(tibble|tbl(_df)?|data\\.frame)")
 })

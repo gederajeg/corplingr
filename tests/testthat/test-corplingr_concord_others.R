@@ -9,5 +9,5 @@ test_that("non-matched pattern produced message", {
 
 df_out <- concord_others(corp, "\\bjalan\\b")
 test_that("output of concord_others is a tibble", {
-  expect_output(str(df_out), "^Classes.+?tbl_df")
+  expect_output(str(df_out), "(tibble|tbl(_df)?|data\\.frame)")
 })

@@ -11,5 +11,5 @@ test_that("output of freqlist_leipzig_all of two or more corpus files is a list"
 
 flist <- freqlist_leipzig_all(leipzig_path = leipzig_corpus_path[2])
 test_that("output of freqlist_leipzig_all of one corpus file is a tibble data frame", {
-  expect_output(str(flist), regexp = "^Classes.+?tbl_df.+?tbl.+?and.+?data\\.frame")
+  expect_output(str(flist), regexp = "(tibble|tbl(_df)?|data\\.frame)")
 })

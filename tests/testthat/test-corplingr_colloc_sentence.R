@@ -29,7 +29,7 @@ test_that("the output of colloc_sentence is a tibble with six columns", {
 
 
 test_that("output of colloc_sentence is a tibble", {
-  expect_output(str(df), regexp = "Classes.+?tbl_df.+?tbl.+?and.+?data\\.frame")
+  expect_output(str(df), regexp = "(tibble|tbl(_df)?|data\\.frame)")
 })
 
 

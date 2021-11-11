@@ -4,7 +4,9 @@
 \name{stopwords}
 \alias{stopwords}
 \title{Stopwords}
-\format{An object of class \code{character} of length 398.}
+\format{
+An object of class \code{character} of length 398.
+}
 \usage{
 stopwords
 }

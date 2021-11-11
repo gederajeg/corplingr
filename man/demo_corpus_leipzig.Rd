@@ -4,7 +4,9 @@
 \name{demo_corpus_leipzig}
 \alias{demo_corpus_leipzig}
 \title{Leipzig corpora demo}
-\format{An object of class \code{list} of length 15.}
+\format{
+An object of class \code{list} of length 15.
+}
 \usage{
 demo_corpus_leipzig
 }

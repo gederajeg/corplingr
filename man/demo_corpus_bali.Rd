@@ -4,7 +4,9 @@
 \name{demo_corpus_bali}
 \alias{demo_corpus_bali}
 \title{Balinese newspapers texts}
-\format{An object of class \code{list} of length 10.}
+\format{
+An object of class \code{list} of length 10.
+}
 \usage{
 demo_corpus_bali
 }

@@ -58,8 +58,8 @@ freqlist_leipzig_all <- function(split_regex = "([^a-zA-Z0-9-]+|--)",
     freqlist <- tibble::tibble(!!word_q := wtoken)
     freqlist <- dplyr::count(freqlist, !!word_q, sort = TRUE)
     if (length(leipzig_path) == 1) {
-      return(freqlist)
       cat('Done!\n')
+      return(freqlist)
     } else if (length(leipzig_path) > 1) {
       #freqlist_all[[i]] <- list(freqlist)
       freqlist_all[[i]] <- freqlist

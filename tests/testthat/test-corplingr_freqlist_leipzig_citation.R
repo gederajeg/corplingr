@@ -1,6 +1,6 @@
 context("test-corplingr_freqlist_leipzig_citation.R")
 
-filepath <- "/Users/Primahadi/Documents/Corpora/_corpusindo/Leipzig Corpora/ind_news_2008_300K-sentences.txt"
+filepath <- "mini_leipzig.txt"
 pattern <- "\\bmengasia\\b"
 
 
@@ -9,7 +9,7 @@ test_that("no match return message", {
                  "No match found at all!")
 })
 
-pattern <- "\\bmembawa\\b"
+pattern <- "\\bakan\\b"
 outmatch <- freqlist_leipzig_citation(pattern, filepath)
 test_that("row number is greater than zero when match found", {
   expect_true(nrow(outmatch) > 0)

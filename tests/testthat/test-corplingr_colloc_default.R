@@ -8,10 +8,7 @@ test_that("output colloc_default is a list of three elements", {
   expect_output(str(output), "List of 3")
 })
 
-output <- corplingr::colloc_default(corpus_path = orti_bali_path[1:200],
-                                    pattern = "^nuju$",
-                                    window = "b",
-                                    span = 3)
+data("obali_colloc_output_test")
 test_that("output colloc_default (now with filepath) is a list of three elements", {
   expect_output(str(output), "List of 3")
 })

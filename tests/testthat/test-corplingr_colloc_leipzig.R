@@ -1,7 +1,7 @@
 context("test-corplingr_colloc_leipzig.R")
 
-colloc <- colloc_leipzig(leipzig_path = leipzig_corpus_path[2],
-                         pattern = "\\bterelakkan\\b",
+colloc <- colloc_leipzig(leipzig_path = "mini_leipzig.txt",
+                         pattern = "\\byang\\b",
                          window = "b",
                          span = 3,
                          save_results = FALSE,
@@ -10,7 +10,7 @@ test_that("output of colloc_leipzig is a list of two elements", {
   expect_output(str(colloc), "List of 2")
 })
 
-colloc <- colloc_leipzig(leipzig_path = leipzig_corpus_path[2],
+colloc <- colloc_leipzig(leipzig_path = "mini_leipzig.txt",
                          pattern = "\\bfdhfghkjlvhj\\b",
                          window = "b",
                          span = 3,
@@ -22,7 +22,7 @@ test_that("output of non-match of colloc_leipzig is null", {
 })
 
 test_that("output of non-match produce message", {
-  expect_message(colloc_leipzig(leipzig_path = leipzig_corpus_path[2],
+  expect_message(colloc_leipzig(leipzig_path = "mini_leipzig.txt",
                                 pattern = "\\bfdhfghkjlvhj\\b",
                                 window = "b",
                                 span = 3,

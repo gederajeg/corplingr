@@ -1,9 +1,9 @@
 context("test-corplingr_colloc_sentence.R")
 
 # test data from the output of colloc_sentence
-df <- colloc_sentence(corpus_path = leipzig_corpus_path[2:3],
+df <- colloc_sentence(corpus_path = "mini_leipzig.txt",
                       leipzig_input = TRUE,
-                      pattern = "\\bterkalahkan\\b",
+                      pattern = "\\byang\\b",
                       window = "l",
                       span = 1,
                       case_insensitive = TRUE,
@@ -11,7 +11,7 @@ df <- colloc_sentence(corpus_path = leipzig_corpus_path[2:3],
                       save_interim_results = FALSE)
 
 test_that("unidentified pattern produces message", {
-  expect_message(colloc_sentence(corpus_path = leipzig_corpus_path[2:3],
+  expect_message(colloc_sentence(corpus_path = "mini_leipzig.txt",
                                  leipzig_input = TRUE,
                                  pattern = "\\bxhfjanfkamfkda\\b",
                                  window = "l",
@@ -33,7 +33,7 @@ test_that("output of colloc_sentence is a tibble", {
 })
 
 
-df <- colloc_sentence(corpus_path = leipzig_corpus_path[2:3],
+df <- colloc_sentence(corpus_path = "mini_leipzig.txt",
                       leipzig_input = TRUE,
                       pattern = "\\bhgjdanjnvdkrjeijkama\\b",
                       window = "l",

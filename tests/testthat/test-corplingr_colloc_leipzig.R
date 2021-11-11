@@ -10,7 +10,7 @@ test_that("output of colloc_leipzig is a list of two elements", {
   expect_output(str(colloc), "List of 2")
 })
 
-colloc <- colloc_leipzig(leipzig_path = "mini_leipzig.txt",
+colloc <- colloc_leipzig(leipzig_corpus_list = demo_corpus_leipzig,
                          pattern = "\\bfdhfghkjlvhj\\b",
                          window = "r",
                          span = 3,

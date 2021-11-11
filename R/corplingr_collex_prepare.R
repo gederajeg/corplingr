@@ -66,6 +66,12 @@ collex_prepare <- function(list_output = "list output of 'colloc_default()'", sp
   collex_tb <- dplyr::mutate(collex_tb,
                              corpus_size = corpus_size,
                              n_pattern = pattern_size)
+
+  # generate the expected frequency and direction of association
+  collex_tb$a_exp <- as.double(collex_tb$n_w_in_corp) * as.double(collex_tb$n_pattern)/as.double(collex_tb$corpus_size)
+
+  collex_tb$obs_exp <- ifelse(collex_tb$a > collex_tb$a_exp, ">", "<")
+
   return(collex_tb)
 
 }

@@ -32,7 +32,28 @@ for (i in seq_along(leipzig_corpus_path)) {
   names(demo_corpus_leipzig)[i] <- stringr::str_replace_all(basename(leipzig_corpus_path[i]), "(-sentences\\.txt)$", "")
 }
 
-devtools::use_data(demo_corpus_bali, demo_corpus_id, demo_corpus_leipzig, overwrite = TRUE)
+## Demo data for unit testing
+
+flist <- freqlist_leipzig_all(leipzig_path = leipzig_corpus_path[2:3])
+flist_mini <- lapply(flist, function(x) x[1:5,])
+
+mini_leipzig <- sample(readr::read_lines(file = "/Users/Primahadi/Documents/Corpora/_corpusindo/Leipzig Corpora/ind_news_2008_300K-sentences.txt"), 30)
+readr::write_lines(mini_leipzig, file = "data-raw/mini_leipzig.txt")
+
+mini_leipzig <- sample(readr::read_lines(file = "/Users/Primahadi/Documents/Corpora/_corpusindo/Leipzig Corpora/ind_news_2008_300K-sentences.txt"), 30)
+readr::write_lines(mini_leipzig, file = "data-raw/mini_leipzig.txt")
+
+mini_leipzig_1 <- sample(readr::read_lines(file = "/Users/Primahadi/Documents/Corpora/_corpusindo/Leipzig Corpora/ind_news_2009_300K-sentences.txt"), 30)
+readr::write_lines(mini_leipzig_1, file = "data-raw/mini_leipzig_01.txt")
+
+obali_colloc_output_test <- corplingr::colloc_default(corpus_path = orti_bali_path[1:200],
+                                    pattern = "^nuju$",
+                                    window = "b",
+                                    span = 3)
+
+usethis::use_data(demo_corpus_bali, demo_corpus_id, demo_corpus_leipzig, overwrite = FALSE)
+
+usethis::use_data(flist_mini, obali_colloc_output_test, mini_leipzig, mini_leipzig_1, overwrite = FALSE)
 
 
 

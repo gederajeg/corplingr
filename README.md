@@ -11,7 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://github.com/gederajeg/corplingr/workflows/R-CMD-check/badge.svg)](https://github.com/gederajeg/corplingr/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/gederajeg/corplingr/branch/master/graph/badge.svg)](https://codecov.io/gh/gederajeg/corplingr?branch=master)
-[![](https://img.shields.io/badge/doi-10.1111/2041--210X.12628-green.svg)](https://doi.org/10.1111/2041-210X.12628)
+[![](https://img.shields.io/badge/doi-10.17605/OSF.IO/X8CW4-blue.svg)](https://doi.org/10.17605/OSF.IO/X8CW4)
 <!-- badges: end -->
 
 The goal of corplingr is to provide tools for generating concordance,

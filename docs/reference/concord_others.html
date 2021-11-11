@@ -8,11 +8,13 @@
 
 <title>Simple concordance function — concord_others • corplingr</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -36,11 +38,10 @@
 
 
 
-<meta property="og:title" content="Simple concordance function — concord_others" />
 
+<meta property="og:title" content="Simple concordance function — concord_others" />
 <meta property="og:description" content="The function generates a tidy concordance for a search pattern in a (set of) corpus (files).
     The function requires the corpus file(s) loaded and ready in the console as a vector of text with more than one line of texts/sentences. Each line should not correspond to one sentence. See Examples below for details." />
-
 
 
 
@@ -80,7 +81,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -88,11 +89,10 @@
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gederajeg/corplingr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -115,10 +115,8 @@
     </div>
 
     <div class="ref-description">
-    
     <p>The function generates a tidy concordance for a search pattern in a (set of) corpus (files).
     The function requires the corpus file(s) loaded and ready in the console as a vector of text with more than one line of texts/sentences. Each line should not correspond to one sentence. See <b>Examples</b> below for details.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>concord_others</span>(
@@ -128,7 +126,7 @@
   <span class='kw'>case_insensitive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>context_char</span> <span class='kw'>=</span> <span class='fl'>50</span>
 )</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -153,11 +151,10 @@
       <td><p>integer vector for the specified number of character as context to the left and right of the node pattern.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble/data frame for the concordance match with <code>LEFT</code> and <code>RIGHT</code> contexts.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"></pre>
@@ -176,7 +173,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

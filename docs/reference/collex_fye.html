@@ -8,11 +8,13 @@
 
 <title>Iterative <em>Fisher-Yates Exact</em> test for collexeme/collocational analysis — collex_fye • corplingr</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -36,12 +38,11 @@
 
 
 
-<meta property="og:title" content="Iterative <em>Fisher-Yates Exact</em> test for collexeme/collocational analysis — collex_fye" />
 
+<meta property="og:title" content="Iterative <em>Fisher-Yates Exact</em> test for collexeme/collocational analysis — collex_fye" />
 <meta property="og:description" content="This is a vectorised wrapper for the dhyper function in the stats package.
     The implementation of the code is adapted from Gries (2012).
     collex_fye also provides a logical argument (i.e., two_sided) whose value is passed to the alternative argument of the embedded fisher.test if two_sided is TRUE." />
-
 
 
 
@@ -81,7 +82,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -89,11 +90,10 @@
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gederajeg/corplingr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -116,24 +116,22 @@
     </div>
 
     <div class="ref-description">
-    
     <p>This is a vectorised wrapper for the <code><a href='https://rdrr.io/r/stats/Hypergeometric.html'>dhyper</a></code> function in the <code>stats</code> package.
     The implementation of the code is adapted from Gries (2012).
     <code>collex_fye</code> also provides a logical argument (i.e., <code>two_sided</code>) whose value is passed to the <code>alternative</code> argument of the embedded <code><a href='https://rdrr.io/r/stats/fisher.test.html'>fisher.test</a></code> if <code>two_sided</code> is <code>TRUE</code>.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>collex_fye</span>(
-  <span class='no'>a</span>,
-  <span class='kw'>n_corpus</span> <span class='kw'>=</span> <span class='st'>"total size of the corpus"</span>,
-  <span class='kw'>n_coll</span> <span class='kw'>=</span> <span class='st'>"total frequency of collexemes/collocates in the corpus as a whole"</span>,
-  <span class='kw'>n_cxn</span> <span class='kw'>=</span> <span class='st'>"total frequency of the construction/node word in the corpus as a whole"</span>,
+  <span class='kw'>a</span> <span class='kw'>=</span> <span class='st'>"frequency of co-occurrence of the collocate and the node"</span>,
+  <span class='kw'>a_exp</span> <span class='kw'>=</span> <span class='st'>"expected frequency"</span>,
+  <span class='kw'>n_w_in_corp</span> <span class='kw'>=</span> <span class='st'>"total frequency of collexemes/collocates in the whole corpus"</span>,
+  <span class='kw'>corpus_size</span> <span class='kw'>=</span> <span class='st'>"total size of the corpus"</span>,
+  <span class='kw'>n_pattern</span> <span class='kw'>=</span> <span class='st'>"total frequency of the construction/node word in the whole corpus"</span>,
   <span class='kw'>two_sided</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>collstr_res</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>float</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>mpfr_precision</span> <span class='kw'>=</span> <span class='fl'>500</span>
+  <span class='kw'>float</span> <span class='kw'>=</span> <span class='fl'>3</span>
 )</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -142,15 +140,19 @@
       <td><p>cell <code>a</code> in a 2-by-2 crosstabulation matrix (viz. representing the co-occurrence tokens of the levels of the variables. For instance, word-word co-occurrences, or word-construction co-occurrences).</p></td>
     </tr>
     <tr>
-      <th>n_corpus</th>
-      <td><p>the total size (in word tokens) of the corpus.</p></td>
+      <th>a_exp</th>
+      <td><p>expected frequency for cell <code>a</code> in the 2-by-2 crosstabulation matrix</p></td>
     </tr>
     <tr>
-      <th>n_coll</th>
+      <th>n_w_in_corp</th>
       <td><p>the total frequency of the collexemes/collocates of the target construction/node word in the corpus.</p></td>
     </tr>
     <tr>
-      <th>n_cxn</th>
+      <th>corpus_size</th>
+      <td><p>the total size (in word tokens) of the corpus.</p></td>
+    </tr>
+    <tr>
+      <th>n_pattern</th>
       <td><p>the total frequency of occurrence of the target construction/node word in the corpus.</p></td>
     </tr>
     <tr>
@@ -163,20 +165,35 @@
     </tr>
     <tr>
       <th>float</th>
-      <td><p>the floating digits of the Collostruction Strength. The default is <code>3</code>.</p></td>
-    </tr>
-    <tr>
-      <th>mpfr_precision</th>
-      <td><p>a number indicating the maximal precision to be used in <b>bits</b>. This is passed to the <code>precBits</code> argument of <code><a href='https://rdrr.io/pkg/Rmpfr/man/mpfr.html'>mpfr</a></code>.</p></td>
+      <td><p>the floating digits of the Collostruction/Collocation Strength. The default value is <code>3</code>.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Numeric vector of the same length as <code>a</code> interpreted as the Collostruction Strength of the construction/node word with the collexemes/collocates.
     Collostruction Strength is (i) the negative logarithm to the base of ten of the Fisher-Yates Exact test <em>p</em>-value when <code>a</code> &gt; <code>a_exp</code>, and (ii) the positive logarithm when <code>a</code> &lt;= <code>a_exp</code>.</p>
-    
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'># do the collocate search using "corpus_path" input-option</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tidyverse</span>)
+<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='colloc_default.html'>colloc_default</a></span>(<span class='kw'>corpus_path</span> <span class='kw'>=</span> <span class='no'>orti_bali_path</span>,
+                     <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"^nuju$"</span>,
+                     <span class='kw'>window</span> <span class='kw'>=</span> <span class='st'>"b"</span>, <span class='co'># focusing on both left and right context window</span>
+                     <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>3</span>) <span class='co'># retrieve 3 collocates to the left and right of the node</span>
+<span class='co'># prepare the collexeme analysis input tibble</span>
+<span class='co'># and select to focus on R1 and R2 collocates.</span>
+<span class='no'>collex_tb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='collex_prepare.html'>collex_prepare</a></span>(<span class='no'>df</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"r1"</span>, <span class='st'>"r2"</span>))
+
+<span class='co'># run the Fisher-Yates Exact (FYE) Test in vectorised fashion with the help of purrr's pmap</span>
+<span class='co'># the example below runs the one-tailed FYE and output the p-value in log10 of CollStr value</span>
+<span class='no'>collex_tb</span> <span class='kw'>&lt;-</span> <span class='fu'>mutate</span>(<span class='no'>collex_tb</span>,
+                    <span class='kw'>collstr</span> <span class='kw'>=</span> <span class='kw pkg'>purrr</span><span class='kw ns'>::</span><span class='fu'><a href='https://purrr.tidyverse.org/reference/map2.html'>pmap_dbl</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>a</span>, <span class='no'>a_exp</span>, <span class='no'>n_w_in_corp</span>, <span class='no'>corpus_size</span>, <span class='no'>n_pattern</span>),
+                                   <span class='no'>collex_fye</span>, <span class='kw'>two_sided</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>collstr_res</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))
+<span class='co'># preview the results</span>
+<span class='no'>collex_tb</span>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -192,7 +209,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

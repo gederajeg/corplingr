@@ -8,11 +8,13 @@
 
 <title>Collocates retrieval on sentence-based corpus — colloc_sentence • corplingr</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -36,11 +38,10 @@
 
 
 
-<meta property="og:title" content="Collocates retrieval on sentence-based corpus — colloc_sentence" />
 
+<meta property="og:title" content="Collocates retrieval on sentence-based corpus — colloc_sentence" />
 <meta property="og:description" content="Perform collocate search for a given word/pattern based on corpus text files with one sentence per line (e.g., the Leipzig Corpora) (cf. Details below).
     If the input is otherwise, such that each line of the corpus does not correspond to a sentence, use colloc_default." />
-
 
 
 
@@ -80,7 +81,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -88,11 +89,10 @@
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gederajeg/corplingr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -115,10 +115,8 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Perform collocate search for a given word/pattern based on corpus text files with one sentence per line (e.g., the Leipzig Corpora) (cf. <b>Details</b> below).
     If the input is otherwise, such that each line of the corpus does not correspond to a sentence, use <code><a href='colloc_default.html'>colloc_default</a></code>.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>colloc_sentence</span>(
@@ -132,7 +130,7 @@
   <span class='kw'>save_interim_results</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>coll_output_name</span> <span class='kw'>=</span> <span class='st'>"colloc_tibble_out.txt"</span>
 )</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -175,11 +173,10 @@ Each sentence can be in successive, cohesive sequence (e.g. based on a Novel) or
       <td><p>name of the file for the collocate tables.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tbl_df of raw collocates.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function, which is largely built on top of the <code>tidyverse</code>, is specifically designed to handle collocates search that is not crossing boundary of the sentence in which the search word/pattern occurs.
@@ -187,7 +184,6 @@ Each sentence can be in successive, cohesive sequence (e.g. based on a Novel) or
     Thus, it is important to keep the collocates of the search word/pattern falling within the sentence boundary in which the word/pattern occurs. That way, it aims maintain cohesivness of meaning of the word.</p>
 <p>Moreover, the function only outputs the raw collocates data without tabulating the frequency of the collocates and performing association measure of the collocates to the search word/pattern.
     Future iteration of this package aims to accommodate this feature.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -209,7 +205,7 @@ Each sentence can be in successive, cohesive sequence (e.g. based on a Novel) or
 <span class='no'>df</span>
 
 <span class='co'># count the frequency of the collocates</span>
-<span class='no'>df</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/tally.html'>count</a></span>(<span class='no'>w</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>df</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/count.html'>count</a></span>(<span class='no'>w</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -226,7 +222,7 @@ Each sentence can be in successive, cohesive sequence (e.g. based on a Novel) or
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

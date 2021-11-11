@@ -8,11 +8,13 @@
 
 <title>Split a corpus by sentence-boundary — tokenise_sentence • corplingr</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -36,13 +38,12 @@
 
 
 
-<meta property="og:title" content="Split a corpus by sentence-boundary — tokenise_sentence" />
 
+<meta property="og:title" content="Split a corpus by sentence-boundary — tokenise_sentence" />
 <meta property="og:description" content="The embedded function in the collocational framework to split input corpus into vector of sentences using stri_split_boundaries from stringi package.
     Each sentence line will be appended, at the beginning and at the end, with &quot;ZSENTENCEZ&quot; marker as many as the number of collocational window-span is required.
     This marker will help identify if collocates of a word cross the boundary of the sentence in which the word occurs.
     The function automatically detects and removes if &quot;ZSENTENCEZ&quot; is part of the identified collocate." />
-
 
 
 
@@ -82,7 +83,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -90,11 +91,10 @@
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gederajeg/corplingr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,16 +117,14 @@
     </div>
 
     <div class="ref-description">
-    
     <p>The embedded function in the collocational framework to split input corpus into vector of sentences using <code><a href='https://rdrr.io/pkg/stringi/man/stri_split_boundaries.html'>stri_split_boundaries</a></code> from <code>stringi</code> package.
     Each sentence line will be appended, at the beginning and at the end, with <code>"ZSENTENCEZ"</code> marker as many as the number of collocational window-span is required.
     This marker will help identify if collocates of a word cross the boundary of the sentence in which the word occurs.
     The function automatically detects and removes if <code>"ZSENTENCEZ"</code> is part of the identified collocate.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>tokenise_sentence</span>(<span class='kw'>strings</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>to_lower</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>window_span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -144,11 +142,10 @@
 It will determine the number of times the <code>"ZSENTENCEZ"</code> marker will be appended at the beginning and at the end of each sentence.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A character vector with as many sentences as there are in the input corpus as identified by <code><a href='https://rdrr.io/pkg/stringi/man/stri_split_boundaries.html'>stri_split_boundaries</a></code>.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>txt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"It is one sentence. It is another sentence! There are TWO sentences."</span>,
@@ -179,7 +176,7 @@ It will determine the number of times the <code>"ZSENTENCEZ"</code> marker will 
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

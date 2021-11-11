@@ -17,3 +17,23 @@
 #'
 #' List of Indonesian stopwords
 "stopwords"
+
+#' Unit testing data 1
+#'
+#' A list containing two mini data frame as output for \code{freqlist_leipzig_all()}. This list is used for unit testing data.
+"flist_mini"
+
+#' Unit testing data 2
+#'
+#' A plain text containing thirty random sentences from the Indonesian Leipzig corpora. This file is stored in the testthat directory and used for unit testing data.
+"mini_leipzig"
+
+#' Unit testing data 3
+#'
+#' A plain text containing thirty random sentences from the Indonesian Leipzig corpora. This file is stored in the testthat directory and used for unit testing data.
+"mini_leipzig_1"
+
+#' Unit testing data 4
+#'
+#' A list containing outputs from \code{colloc_default()}. This list is used for unit testing data.
+"obali_colloc_output_test"

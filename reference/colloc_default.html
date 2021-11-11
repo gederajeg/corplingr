@@ -127,7 +127,7 @@
   pattern <span class='op'>=</span> <span class='cn'>NULL</span>,
   window <span class='op'>=</span> <span class='st'>"b"</span>,
   span <span class='op'>=</span> <span class='fl'>3</span>,
-  word_split_regex <span class='op'>=</span> <span class='st'>"([^a-zA-ZÀ-ÖÙ-öù-ÿĀ-žḀ-\u1eff]+|--)"</span>,
+  word_split_regex <span class='op'>=</span> <span class='st'>"([^a-zA-Z-]+|--)"</span>,
   case_insensitive <span class='op'>=</span> <span class='cn'>TRUE</span>,
   to_lower_colloc <span class='op'>=</span> <span class='cn'>TRUE</span>,
   tokenise_corpus_to_sentence <span class='op'>=</span> <span class='cn'>TRUE</span>
@@ -162,7 +162,7 @@ There can be more than one element (hence more than one corpus text) within this
       <th>word_split_regex</th>
       <td><p>user-defined regular expressions to tokenise the corpus.
 The default is to split at non alphabetic characters but retain hypen "-" as to maintain reduplication, for instance.
-The regex for this default setting is <code>""([^a-zA-ZÀ-ÖÙ-öù-ÿĀ-žḀ-ỿ]+|--)""</code>.</p></td>
+The regex for this default setting is <code>""([^a-zA-Z-]+|--)""</code>. Another possible splitting regex may include various characters with diacritics (e.g., <code>'([^a-zA-Z\u00c0-\u00d6\u00d9-\u00f6\u00f9-\u00ff\u0100-\u017e\u1e00-\u1eff]+|--)'</code>)</p></td>
     </tr>
     <tr>
       <th>case_insensitive</th>

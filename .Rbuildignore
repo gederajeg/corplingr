@@ -10,3 +10,6 @@
 ^docs$
 ^LICENSE\.md$
 ^\.github$
+^colloc_tibble_out.txt$
+^colloc_tibble_leipzig.txt$
+^colloc_sent_match_leipzig.txt$

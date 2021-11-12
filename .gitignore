@@ -4,3 +4,5 @@
 .Ruserdata
 /experiment
 /junk
+colloc_tibble*
+colloc_sent*

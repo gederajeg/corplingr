@@ -56,7 +56,7 @@ usethis::use_data(demo_corpus_bali, demo_corpus_id, demo_corpus_leipzig, overwri
 usethis::use_data(flist_mini, obali_colloc_output_test, mini_leipzig, mini_leipzig_1, overwrite = FALSE)
 
 # code for creating the sticker
-imgurl <- system.file('inst/figures/conc-logo.png', package = "corplingr")
+imgurl <- system.file('man/figures/conc-logo.png', package = "corplingr")
 
 sticker(imgurl,
         package = "corplingr",
@@ -73,7 +73,7 @@ sticker(imgurl,
         h_color = 'gold',
         url = "https://gederajeg.github.io/corplingr/",
         u_size = 1.275,
-        filename = "inst/figures/imgfile.png")
+        filename = "man/figures/corplingr-logo.png")
 
 # test colloc_default
 #dfid <- colloc_default(corpus_list = demo_corpus_id,

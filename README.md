@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# corplingr
+# corplingr <a href='https://gederajeg.github.io/corplingr/'><img src='inst/figures/corplingr-logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 

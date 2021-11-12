@@ -45,3 +45,14 @@ df <- colloc_sentence(corpus_path = "mini_leipzig.txt",
 test_that("the output of colloc_sentence without match is a tibble with zero observations and variables", {
   expect_identical(dim(df), c(0L, 0L))
 })
+
+
+test_that("saving the interim result produces message", {expect_message(colloc_sentence(corpus_path = "mini_leipzig.txt",
+                               leipzig_input = TRUE,
+                               pattern = "\\byang\\b",
+                               window = "l",
+                               span = 1,
+                               case_insensitive = TRUE,
+                               to_lower_colloc = TRUE,
+                               save_interim_results = TRUE,
+                               coll_output_name = "colloc_tibble_out.txt"), regexp = "Saving the interim|All done")})

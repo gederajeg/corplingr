@@ -3,6 +3,6 @@ citHeader("To cite corplingr in publications use:")
 citEntry(entry = "manual",
 title = "{corplingr}: Tidy Concordances, Collocates, and Wordlist",
 author = personList(as.person("Gede Primahadi Wijaya Rajeg")),
-year = "2020",
+year = "2021",
 note = "R package development version 1.0",
-textVersion = paste("Rajeg, G. P. W. (2020). corplingr: Tidy Concordances, Collocates, and Wordlist. R package development version 1.0."))
+textVersion = paste("Rajeg, G. P. W. (2021). corplingr: Tidy Concordances, Collocates, and Wordlist. R package development version 1.0."))

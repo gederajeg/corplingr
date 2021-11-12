@@ -61,7 +61,6 @@
 #' @importFrom dplyr tally
 #' @importFrom dplyr pull
 #' @importFrom dplyr left_join
-#' @export
 
 collex_prepare_leipzig <- function(list_output = NULL,
                                    leipzig_wordlist_path = leipzig_mywordlist_path,

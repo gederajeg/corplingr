@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# corplingr <a href='https://gederajeg.github.io/corplingr/'><img src='inst/figures/corplingr-logo.png' align="right" height="139" /></a>
+# corplingr <a href='https://gederajeg.github.io/corplingr/'><img src='man/figures/corplingr-logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -16,10 +16,14 @@ coverage](https://codecov.io/gh/gederajeg/corplingr/branch/master/graph/badge.sv
 <!-- badges: end -->
 
 The goal of corplingr is to provide tools for generating concordance,
-collocates, and word-frequency list from raw text corpora (initiated
-with the sentence-based corpus of [Indonesian Leipzig
+collocates, and word-frequency list from raw/unannotated corpora. Users
+are suggested to use [collogetr](https://gederajeg.github.io/collogetr/)
+as the specific package for extracting window-span collocates based on
+input from the sentence-based corpus of [Indonesian Leipzig
 Corpora](https://corpora.uni-leipzig.de/en?corpusId=ind_mixed_2013)
-collection).
+collection); corplingr so far provides tested functions to generate
+concordance/keyword in context (KWIC) display and frequency list from
+the sentence-based corpus of Leipzig Corpora.
 
 ## Installation
 

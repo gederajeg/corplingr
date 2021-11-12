@@ -140,8 +140,8 @@ colloc_sentence <- function(corpus_path = "(full) filepath to sentence-based cor
     all_colloc <- dplyr::filter(all_colloc, !!filter_call)
     cat(paste("\nDone with corpus ", corpus_name, "!\n\n", sep = ""))
     if (save_interim_results == TRUE) {
-      readr::write_delim(all_colloc, path = coll_output_name, delim = "\t", append = TRUE)
-      cat(paste("\nSaving the interim results for ", corpus_name, "!\n\n", sep = ""))
+      readr::write_delim(all_colloc, file = coll_output_name, delim = "\t", append = TRUE)
+      message(paste("\nSaving the interim results for ", corpus_name, "!\n\n", sep = ""))
     } else {
       all_all_colloc <- dplyr::bind_rows(all_all_colloc, all_colloc)
     }

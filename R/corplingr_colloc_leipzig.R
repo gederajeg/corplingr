@@ -305,8 +305,8 @@ colloc_leipzig <- function(leipzig_path = NULL,
     message("No match is found at all!")
   } else {
     if (save_results == TRUE) {
-      readr::write_delim(x = colloc_all, path = coll_output_name, delim = "\t", append = TRUE)
-      readr::write_delim(x = sent_match_all, path = sent_output_name, delim="\t", append = TRUE)
+      readr::write_delim(x = colloc_all, file = coll_output_name, delim = "\t", append = TRUE)
+      readr::write_delim(x = sent_match_all, file = sent_output_name, delim="\t", append = TRUE)
       message("Collocates table and sentence match of the node have been saved!\n\n")
     } else {
       out <- list(colloc_all, sent_match_all)
